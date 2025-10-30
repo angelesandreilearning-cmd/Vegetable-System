@@ -13,12 +13,12 @@ namespace Vegetable_Ordering_System
 {
     public partial class Log_In : Form
     {
-        public Log_In()
+        public  Log_In()
         {
             InitializeComponent();
         }
 
-        private void Log_In_Load(object sender, EventArgs e)
+        private void logIn_Load(object sender, EventArgs e)
         {
 
         }
@@ -28,7 +28,7 @@ namespace Vegetable_Ordering_System
 
         }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+        private void btnLogIn_Click(object sender, EventArgs e)
         {
            logIn();
         }
@@ -38,7 +38,7 @@ namespace Vegetable_Ordering_System
             string password = txtPassword.Text;
             string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{6,18}$";
 
-            // Clear previous error
+         
             errorProvider1.SetError(txtPassword, "");
 
             if (!Regex.IsMatch(password, pattern))
@@ -54,15 +54,16 @@ namespace Vegetable_Ordering_System
             {
                 MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Hide();
-                MainMenuForm adminForm = new MainMenuForm(username);
+               MainMenuForm adminForm = new MainMenuForm(username);
                 adminForm.ShowDialog();
             }
             else if (username == "merchant" && password == "Password@123")
             {
                 MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Hide();
-                MainMenuForm adminForm = new MainMenuForm(username);
-                adminForm.ShowDialog();
+             MainMenuForm merchantForm = new MainMenuForm(username);
+                merchantForm.ShowDialog();
+
             }
 
             else
@@ -95,6 +96,18 @@ namespace Vegetable_Ordering_System
         {
             txtPassword.ForeColor = Color.Black;
             txtPassword.Clear();
+        }
+
+        private void label1_Click_1(object sender, EventArgs e)
+        {
+            Registration regForm = new Registration();
+            regForm.Show();
+            this.Hide();
+        }
+
+        private void btnLogin_Click_1(object sender, EventArgs e)
+        {
+            logIn();
         }
     }
 }

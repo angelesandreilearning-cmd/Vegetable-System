@@ -213,6 +213,26 @@ namespace Vegetable_Ordering_System.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Image_1rgchb1rgchb1rgc_removebg_preview {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Image_1rgchb1rgchb1rgc-removebg-preview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Image_a8qprga8qprga8qp_removebg_preview {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Image_a8qprga8qprga8qp-removebg-preview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Gemini_Generated_Image_liluwtliluwtlilu_removebg_preview {
             get {
                 object obj = ResourceManager.GetObject("Gemini_Generated_Image_liluwtliluwtlilu-removebg-preview", resourceCulture);
@@ -286,6 +306,16 @@ namespace Vegetable_Ordering_System.Properties {
         internal static System.Drawing.Bitmap Gemini_Generated_Image_w2nd3kw2nd3kw2nd_removebg_preview {
             get {
                 object obj = ResourceManager.GetObject("Gemini_Generated_Image_w2nd3kw2nd3kw2nd-removebg-preview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Image_who7ewho7ewho7ew_photoaidcom_cropped {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Image_who7ewho7ewho7ew-photoaidcom-cropped", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

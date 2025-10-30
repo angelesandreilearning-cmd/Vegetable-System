@@ -14,30 +14,45 @@ namespace Vegetable_Ordering_System
     public partial class MainMenuForm : Form
     {
         private string _username;
-        private bool isSettingsMenuVisible = false;
+  
+   
+
 
         public MainMenuForm(string username)
         {
             InitializeComponent();
             _username = username;
+            
         }
 
         private void MainMenu_Load(object sender, EventArgs e)
         {
+            timer1.Start();
+            if (_username == "admin")
+            {
+                lblCurrentUser.Text = "Logged in as Admin";
+            }
+            else if (_username == "merchant")
+            {
+                lblCurrentUser.Text = "Logged in as Merchant";
+                btnSuppliers.Visible = false;
+                btnSettings.Visible = false;
+            }
+            else
+            {
+                lblCurrentUser.Text = $"Logged in as {_username}";
+            }
             RoundPanel(panelOrderToday, 20);
             RoundPanel(panelSales, 20);
             RoundPanel(panelStocks, 20);
             RoundPanel(panelTopSelling, 20);
             RoundPanel(panelDailyOrders, 20);
 
-            // Set the label text based on the username
-            if (_username == "admin")
-                labelCurrentUser.Text = "Profile: admin";
-            else if (_username == "merchant")
-                labelCurrentUser.Text = "Profile: Merchant - Andrei";
-            else
-                labelCurrentUser.Text = $"Profile: {_username}";
+          
         }
+        
+         
+       
         private void RoundPanel(Panel panel, int cornerRadius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -150,9 +165,11 @@ namespace Vegetable_Ordering_System
 
         private void btnSuppliers_Click(object sender, EventArgs e)
         {
-            SupplierForm supplierForm = new SupplierForm();
-            supplierForm.Show();
-            this.Close();
+            this.Hide(); 
+            SupplierForm supplierForm = new SupplierForm(_username);
+            supplierForm.ShowDialog(); 
+            this.Show(); 
+         
         }
 
         private void btnOrder_Click(object sender, EventArgs e)
@@ -188,8 +205,8 @@ namespace Vegetable_Ordering_System
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            isSettingsMenuVisible = !isSettingsMenuVisible;
-            panelSettings.Visible = isSettingsMenuVisible;
+           
+         
 
   
             panelSettings.Location = new Point(btnSettings.Left, btnSettings.Bottom);
@@ -209,7 +226,7 @@ namespace Vegetable_Ordering_System
         private void HideSettingsMenu()
         {
             panelSettings.Visible = false;
-            isSettingsMenuVisible = false;
+         
         }
 
         private void btnSystem_Click(object sender, EventArgs e)
@@ -259,6 +276,22 @@ namespace Vegetable_Ordering_System
         }
 
         private void labelCurrentUser_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            lblTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
+            lblDate.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+        }
+
+        private void lblCurrentUser_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
         {
 
         }
