@@ -155,25 +155,26 @@ namespace Vegetable_Ordering_System
         private void btnRegister_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtName.Text) ||
-         string.IsNullOrWhiteSpace(txtEmail.Text) ||
-         string.IsNullOrWhiteSpace(txtContact.Text) ||
-         string.IsNullOrWhiteSpace(txtAddress.Text) ||
-         string.IsNullOrWhiteSpace(cmbRole.Text) ||
-         string.IsNullOrWhiteSpace(txtSetPassword.Text) ||
-         string.IsNullOrWhiteSpace(txtConfirmPassword.Text))
+       string.IsNullOrWhiteSpace(txtUsername.Text) ||
+       string.IsNullOrWhiteSpace(txtEmail.Text) ||
+       string.IsNullOrWhiteSpace(txtContact.Text) ||
+       string.IsNullOrWhiteSpace(txtAddress.Text) ||
+       string.IsNullOrWhiteSpace(cmbRole.Text) ||
+       string.IsNullOrWhiteSpace(txtSetPassword.Text) ||
+       string.IsNullOrWhiteSpace(txtConfirmPassword.Text))
             {
-                MessageBox.Show("Please fill in all fields.", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please fill in all fields.", "Missing Information",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-         
             if (txtSetPassword.Text != txtConfirmPassword.Text)
             {
-                MessageBox.Show("Passwords do not match. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Passwords do not match. Please try again.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-           
             try
             {
                 string connectionString = @"Data Source=LAPTOP-B8MV83P4\SQLEXPRESS01;Initial Catalog=db_vegetableOrdering;Integrated Security=True;";
@@ -182,32 +183,34 @@ namespace Vegetable_Ordering_System
                 {
                     conn.Open();
 
-                    string query = @"INSERT INTO tbl_Users (Name, Email, Contact, Address, Role, Password)
-                             VALUES (@Name, @Email, @Contact, @Address, @Role, @Password)";
+                    string query = @"
+                INSERT INTO tbl_Users (Name, Username, Email, Contact, Address, Role, Password)
+                VALUES (@Name, @Username, @Email, @Contact, @Address, @Role, @Password)";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@Name", txtName.Text);
+                    cmd.Parameters.AddWithValue("@Username", txtUsername.Text.Trim());
                     cmd.Parameters.AddWithValue("@Email", txtEmail.Text);
                     cmd.Parameters.AddWithValue("@Contact", txtContact.Text);
                     cmd.Parameters.AddWithValue("@Address", txtAddress.Text);
                     cmd.Parameters.AddWithValue("@Role", cmbRole.Text);
-                    cmd.Parameters.AddWithValue("@Password", txtSetPassword.Text); 
+                    cmd.Parameters.AddWithValue("@Password", txtSetPassword.Text);
 
                     cmd.ExecuteNonQuery();
-                    conn.Close();
                 }
 
-                MessageBox.Show("Registration successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Registration successful! You can now log in.",
+                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-           
-                ClearFields();
-                this.Close();
-                Log_In log_In = new Log_In();
-                log_In.Show();
+        
+                this.Hide();
+                Log_In loginForm = new Log_In();
+                loginForm.Show();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error saving data: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error saving data: " + ex.Message,
+                    "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }

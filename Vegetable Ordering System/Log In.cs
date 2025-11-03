@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -32,13 +33,12 @@ namespace Vegetable_Ordering_System
         {
            logIn();
         }
-        private void logIn() {
+        private void logIn()
+        {
+            string username = txtUsername.Text.Trim();
+            string password = txtPassword.Text.Trim();
 
-            string username = txtUsername.Text;
-            string password = txtPassword.Text;
             string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{6,18}$";
-
-         
             errorProvider1.SetError(txtPassword, "");
 
             if (!Regex.IsMatch(password, pattern))
@@ -50,25 +50,52 @@ namespace Vegetable_Ordering_System
                 return;
             }
 
-            if (username == "admin" && password == "Password@123")
-            {
-                MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.Hide();
-               MainMenuForm adminForm = new MainMenuForm(username);
-                adminForm.ShowDialog();
-            }
-            else if (username == "merchant" && password == "Password@123")
-            {
-                MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.Hide();
-             MainMenuForm merchantForm = new MainMenuForm(username);
-                merchantForm.ShowDialog();
+            string connectionString = @"Data Source=LAPTOP-B8MV83P4\SQLEXPRESS01;Initial Catalog=db_vegetableOrdering;Integrated Security=True;";
 
-            }
-
-            else
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                MessageBox.Show("Invalid username or password.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                try
+                {
+                    conn.Open();
+
+                   
+                    string query = @"
+                SELECT Role 
+                FROM tbl_Users 
+                WHERE Username COLLATE SQL_Latin1_General_CP1_CS_AS = @username 
+                AND Password COLLATE SQL_Latin1_General_CP1_CS_AS = @password";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@username", username);
+                    cmd.Parameters.AddWithValue("@password", password);
+
+                    object roleResult = cmd.ExecuteScalar();
+
+                    if (roleResult != null)
+                    {
+                        string role = roleResult.ToString();
+
+                        MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.Hide();
+
+                        
+                        MainMenuForm mainMenu = new MainMenuForm(username, role);
+                        mainMenu.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "Invalid Username or Password. (Remember: Case-Sensitive!)",
+                            "Login Failed",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error
+                        );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Database error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

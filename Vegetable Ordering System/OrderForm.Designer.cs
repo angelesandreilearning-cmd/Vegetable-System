@@ -64,13 +64,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.txtCustomer = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblTotal = new System.Windows.Forms.Label();
+            this.dataGridViewOrderSummary = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnAddProduct = new System.Windows.Forms.Button();
@@ -80,7 +75,7 @@
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOrderSummary)).BeginInit();
             this.SuspendLayout();
             // 
             // panelNav
@@ -385,12 +380,12 @@
             this.panel3.Controls.Add(this.btnPlaceOrder);
             this.panel3.Controls.Add(this.btnDraft);
             this.panel3.Controls.Add(this.groupBox1);
-            this.panel3.Controls.Add(this.label2);
-            this.panel3.Controls.Add(this.dataGridView1);
+            this.panel3.Controls.Add(this.lblTotal);
+            this.panel3.Controls.Add(this.dataGridViewOrderSummary);
             this.panel3.Controls.Add(this.label3);
             this.panel3.Location = new System.Drawing.Point(923, 184);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(435, 714);
+            this.panel3.Size = new System.Drawing.Size(500, 714);
             this.panel3.TabIndex = 44;
             // 
             // btnPlaceOrder
@@ -531,87 +526,40 @@
             this.label4.TabIndex = 44;
             this.label4.Text = "Customer Name";
             // 
-            // label2
+            // lblTotal
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label2.Location = new System.Drawing.Point(27, 267);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(70, 23);
-            this.label2.TabIndex = 41;
-            this.label2.Text = "Total:    ";
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTotal.Location = new System.Drawing.Point(27, 267);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(96, 23);
+            this.lblTotal.TabIndex = 41;
+            this.lblTotal.Text = "Total: ₱0.00";
             // 
-            // dataGridView1
+            // dataGridViewOrderSummary
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2,
-            this.Column3,
-            this.Column4,
-            this.Column5});
-            this.dataGridView1.Location = new System.Drawing.Point(15, 78);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(403, 186);
-            this.dataGridView1.TabIndex = 42;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Product";
-            this.Column1.MinimumWidth = 6;
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            this.Column1.Width = 70;
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Qty";
-            this.Column2.MinimumWidth = 6;
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
-            this.Column2.Width = 70;
-            // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Unit";
-            this.Column3.MinimumWidth = 6;
-            this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
-            this.Column3.Width = 70;
-            // 
-            // Column4
-            // 
-            this.Column4.HeaderText = "Price";
-            this.Column4.MinimumWidth = 6;
-            this.Column4.Name = "Column4";
-            this.Column4.ReadOnly = true;
-            this.Column4.Width = 70;
-            // 
-            // Column5
-            // 
-            this.Column5.HeaderText = "Available";
-            this.Column5.MinimumWidth = 6;
-            this.Column5.Name = "Column5";
-            this.Column5.ReadOnly = true;
-            this.Column5.Width = 70;
+            this.dataGridViewOrderSummary.AllowUserToAddRows = false;
+            this.dataGridViewOrderSummary.AllowUserToDeleteRows = false;
+            this.dataGridViewOrderSummary.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.dataGridViewOrderSummary.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewOrderSummary.Location = new System.Drawing.Point(15, 78);
+            this.dataGridViewOrderSummary.Name = "dataGridViewOrderSummary";
+            this.dataGridViewOrderSummary.ReadOnly = true;
+            this.dataGridViewOrderSummary.RowHeadersWidth = 51;
+            this.dataGridViewOrderSummary.RowTemplate.Height = 24;
+            this.dataGridViewOrderSummary.Size = new System.Drawing.Size(459, 186);
+            this.dataGridViewOrderSummary.TabIndex = 42;
+            this.dataGridViewOrderSummary.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewOrderSummary_CellContentClick);
             // 
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.AutoScroll = true;
             this.flowLayoutPanel2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(219, 184);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(681, 714);
             this.flowLayoutPanel2.TabIndex = 43;
-            this.flowLayoutPanel2.WrapContents = false;
             // 
             // panel1
             // 
@@ -640,7 +588,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1382, 910);
+            this.ClientSize = new System.Drawing.Size(1500, 910);
             this.Controls.Add(this.btnAddProduct);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
@@ -666,7 +614,7 @@
             this.panel3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOrderSummary)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -695,18 +643,13 @@
         private System.Windows.Forms.Button btnBarcode;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.DataGridView dataGridViewOrderSummary;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtCustomer;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Button btnPlaceOrder;
         private System.Windows.Forms.Button btnDraft;
         private System.Windows.Forms.Label label11;

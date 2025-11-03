@@ -73,6 +73,12 @@
     <Compile Include="AddSupplier.Designer.cs">
       <DependentUpon>AddSupplier.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditPriceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditPriceForm.Designer.cs">
+      <DependentUpon>EditPriceForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="InventoryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +123,12 @@
     <Compile Include="Registration.Designer.cs">
       <DependentUpon>Registration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Resources\EditPrice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Resources\EditPrice.Designer.cs">
+      <DependentUpon>EditPrice.cs</DependentUpon>
+    </Compile>
     <Compile Include="SupplierForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,6 +140,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddSupplier.resx">
       <DependentUpon>AddSupplier.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditPriceForm.resx">
+      <DependentUpon>EditPriceForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InventoryForm.resx">
       <DependentUpon>InventoryForm.cs</DependentUpon>
@@ -159,6 +174,9 @@
     </Compile>
     <EmbeddedResource Include="Registration.resx">
       <DependentUpon>Registration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\EditPrice.resx">
+      <DependentUpon>EditPrice.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SupplierForm.resx">
       <DependentUpon>SupplierForm.cs</DependentUpon>

@@ -40,12 +40,21 @@ namespace Vegetable_Ordering_System
             set => numericUpDown1.Value = value;
         }
 
-        public event EventHandler<ProductEventArgs> AddToOrderClicked;
+        public Image ProductImage
+        {
+            get => pictureBox1.Image;
+            set => pictureBox1.Image = value;
+        }
 
+        // EVENTS
+        public event EventHandler<ProductEventArgs> AddToOrderClicked;
+        public event EventHandler<int> EditPriceClicked;
+        public event EventHandler<int> DeleteProductClicked;
+        public event EventHandler<ProductEventArgs> ProductImageClicked;
         public ProductItemControl()
         {
             InitializeComponent();
-            button1.Click += Button1_Click;
+         
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -53,12 +62,46 @@ namespace Vegetable_Ordering_System
             AddToOrderClicked?.Invoke(this, new ProductEventArgs(ProductID, ProductName, Price, Quantity));
         }
 
+        // NEW METHODS
+        private void OnEditPriceClicked()
+        {
+            EditPriceClicked?.Invoke(this, ProductID);
+        }
+
+        private void OnDeleteProductClicked()
+        {
+            DeleteProductClicked?.Invoke(this, ProductID);
+        }
+
+        public void SetAdminMode(bool isAdmin)
+        {
+            lblEditPrice.Visible = isAdmin;
+            label1.Visible = isAdmin;
+        }
+
         public void LoadProduct(string name, decimal price, int stock, Image image)
         {
             lblName.Text = name;
             lblPrice.Text = $"₱{price:N2} / kg";
             lblStock.Text = $"Stock: {stock} kg";
-        
+            pictureBox1.Image = image;
+        }
+
+        private void lblEditPrice_Click(object sender, EventArgs e)
+        {
+            OnEditPriceClicked();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            OnDeleteProductClicked();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            ProductImageClicked?.Invoke(this, new ProductEventArgs(ProductID, ProductName, Price, 1));
+
+
         }
     }
 

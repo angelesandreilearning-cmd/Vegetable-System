@@ -13,35 +13,34 @@ namespace Vegetable_Ordering_System
 {
     public partial class MainMenuForm : Form
     {
-        private string _username;
-  
-   
+        private string currentUser;
+        private string currentRole;
 
 
-        public MainMenuForm(string username)
+        public MainMenuForm(string username, string role)
         {
             InitializeComponent();
-            _username = username;
-            
+            currentUser = username;
+            currentRole = role;
+
+            lblCurrentUser.Text = $"Logged in as {username} ({role})";
+            ApplyRoleRestrictions();
+
+        }
+        private void ApplyRoleRestrictions()
+        {
+            if (currentRole == "Merchant")
+            {
+                btnSettings.Visible = false;
+                btnSuppliers.Visible = false;
+               
+            }
         }
 
         private void MainMenu_Load(object sender, EventArgs e)
         {
             timer1.Start();
-            if (_username == "admin")
-            {
-                lblCurrentUser.Text = "Logged in as Admin";
-            }
-            else if (_username == "merchant")
-            {
-                lblCurrentUser.Text = "Logged in as Merchant";
-                btnSuppliers.Visible = false;
-                btnSettings.Visible = false;
-            }
-            else
-            {
-                lblCurrentUser.Text = $"Logged in as {_username}";
-            }
+          
             RoundPanel(panelOrderToday, 20);
             RoundPanel(panelSales, 20);
             RoundPanel(panelStocks, 20);
@@ -99,13 +98,7 @@ namespace Vegetable_Ordering_System
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to logout?", "Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                this.Hide();
-                Log_In loginForm = new Log_In();
-                loginForm.Show();
-                this.Close();
-            }
+            
         }
         // Add this method to fix CS1061
         private void panelNav_Paint(object sender, PaintEventArgs e)
@@ -165,23 +158,23 @@ namespace Vegetable_Ordering_System
 
         private void btnSuppliers_Click(object sender, EventArgs e)
         {
-            this.Hide(); 
-            SupplierForm supplierForm = new SupplierForm(_username);
-            supplierForm.ShowDialog(); 
-            this.Show(); 
-         
+            this.Hide();
+            SupplierForm supplierForm = new SupplierForm(currentUser, currentRole);
+            supplierForm.ShowDialog();
+            this.Show();
+
         }
 
         private void btnOrder_Click(object sender, EventArgs e)
         {
-            OrderForm orderForm = new OrderForm();
+            OrderForm orderForm = new OrderForm(currentUser, currentRole);
             orderForm.Show();
             this.Close();
         }
 
         private void btnInventory_Click(object sender, EventArgs e)
         {
-            InventoryForm inventoryForm = new InventoryForm();
+            InventoryForm inventoryForm = new InventoryForm(currentUser, currentRole);
             inventoryForm.Show();
             this.Close();
 

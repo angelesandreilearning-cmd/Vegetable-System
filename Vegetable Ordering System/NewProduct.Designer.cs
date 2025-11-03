@@ -29,41 +29,47 @@
         private void InitializeComponent()
         {
             this.btnBrowse = new System.Windows.Forms.Button();
-            this.txtName = new System.Windows.Forms.TextBox();
+            this.txtProductName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.numericQuantity = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.txtPrice = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.picProductImage = new System.Windows.Forms.PictureBox();
+            this.btnAddProduct = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cmbCategory = new System.Windows.Forms.ComboBox();
+            this.txtImagePath = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numericPrice = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numericQuantity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picProductImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericPrice)).BeginInit();
             this.SuspendLayout();
             // 
             // btnBrowse
             // 
             this.btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnBrowse.ForeColor = System.Drawing.Color.Black;
-            this.btnBrowse.Location = new System.Drawing.Point(244, 199);
+            this.btnBrowse.Location = new System.Drawing.Point(272, 203);
             this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(120, 30);
+            this.btnBrowse.Size = new System.Drawing.Size(92, 30);
             this.btnBrowse.TabIndex = 2;
             this.btnBrowse.Text = "Browse...";
             this.btnBrowse.UseVisualStyleBackColor = true;
+            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
-            // txtName
+            // txtProductName
             // 
-            this.txtName.Location = new System.Drawing.Point(130, 235);
-            this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(234, 22);
-            this.txtName.TabIndex = 3;
+            this.txtProductName.Location = new System.Drawing.Point(130, 31);
+            this.txtProductName.Name = "txtProductName";
+            this.txtProductName.Size = new System.Drawing.Size(234, 22);
+            this.txtProductName.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 238);
+            this.label1.Location = new System.Drawing.Point(12, 34);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(99, 16);
             this.label1.TabIndex = 4;
@@ -72,84 +78,130 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 269);
+            this.label2.Location = new System.Drawing.Point(12, 96);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 16);
             this.label2.TabIndex = 5;
             this.label2.Text = "Quantity: ";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
-            // numericUpDown1
+            // numericQuantity
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(130, 263);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(234, 22);
-            this.numericUpDown1.TabIndex = 6;
+            this.numericQuantity.Location = new System.Drawing.Point(130, 90);
+            this.numericQuantity.Name = "numericQuantity";
+            this.numericQuantity.Size = new System.Drawing.Size(234, 22);
+            this.numericQuantity.TabIndex = 6;
+            this.numericQuantity.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 291);
+            this.label3.Location = new System.Drawing.Point(16, 131);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(61, 16);
             this.label3.TabIndex = 7;
             this.label3.Text = "Price (P):";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
-            // txtPrice
+            // picProductImage
             // 
-            this.txtPrice.Location = new System.Drawing.Point(136, 291);
-            this.txtPrice.Name = "txtPrice";
-            this.txtPrice.Size = new System.Drawing.Size(228, 22);
-            this.txtPrice.TabIndex = 8;
+            this.picProductImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picProductImage.Location = new System.Drawing.Point(116, 203);
+            this.picProductImage.Name = "picProductImage";
+            this.picProductImage.Size = new System.Drawing.Size(150, 150);
+            this.picProductImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picProductImage.TabIndex = 0;
+            this.picProductImage.TabStop = false;
             // 
-            // pictureBox1
+            // btnAddProduct
             // 
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(98, 34);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(150, 150);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(53, 371);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(120, 30);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "Add Product";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnAddProduct.Location = new System.Drawing.Point(57, 383);
+            this.btnAddProduct.Name = "btnAddProduct";
+            this.btnAddProduct.Size = new System.Drawing.Size(120, 30);
+            this.btnAddProduct.TabIndex = 9;
+            this.btnAddProduct.Text = "Add Product";
+            this.btnAddProduct.UseVisualStyleBackColor = true;
+            this.btnAddProduct.Click += new System.EventHandler(this.btnAddProduct_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(206, 371);
+            this.button2.Location = new System.Drawing.Point(195, 383);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(120, 30);
             this.button2.TabIndex = 10;
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 60);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(65, 16);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Category:";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
+            // 
+            // cmbCategory
+            // 
+            this.cmbCategory.FormattingEnabled = true;
+            this.cmbCategory.Location = new System.Drawing.Point(130, 60);
+            this.cmbCategory.Name = "cmbCategory";
+            this.cmbCategory.Size = new System.Drawing.Size(234, 24);
+            this.cmbCategory.TabIndex = 12;
+            // 
+            // txtImagePath
+            // 
+            this.txtImagePath.Location = new System.Drawing.Point(130, 159);
+            this.txtImagePath.Name = "txtImagePath";
+            this.txtImagePath.ReadOnly = true;
+            this.txtImagePath.Size = new System.Drawing.Size(234, 22);
+            this.txtImagePath.TabIndex = 13;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 162);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 16);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Image:";
+            // 
+            // numericPrice
+            // 
+            this.numericPrice.Location = new System.Drawing.Point(130, 131);
+            this.numericPrice.Name = "numericPrice";
+            this.numericPrice.Size = new System.Drawing.Size(234, 22);
+            this.numericPrice.TabIndex = 15;
             // 
             // NewProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(382, 414);
+            this.ClientSize = new System.Drawing.Size(382, 431);
+            this.Controls.Add(this.numericPrice);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtImagePath);
+            this.Controls.Add(this.cmbCategory);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.txtPrice);
+            this.Controls.Add(this.btnAddProduct);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.numericQuantity);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.txtName);
+            this.Controls.Add(this.txtProductName);
             this.Controls.Add(this.btnBrowse);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.picProductImage);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "NewProduct";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add New Product";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.Load += new System.EventHandler(this.NewProduct_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.numericQuantity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picProductImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericPrice)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -157,14 +209,18 @@
 
         #endregion
         private System.Windows.Forms.Button btnBrowse;
-        private System.Windows.Forms.TextBox txtName;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TextBox txtProductName;
+        private System.Windows.Forms.PictureBox picProductImage;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown numericQuantity;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtPrice;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnAddProduct;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox cmbCategory;
+        private System.Windows.Forms.TextBox txtImagePath;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericPrice;
     }
 }

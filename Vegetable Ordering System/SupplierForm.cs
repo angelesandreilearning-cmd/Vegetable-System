@@ -14,36 +14,44 @@ namespace Vegetable_Ordering_System
 {
     public partial class SupplierForm : Form
     {
-       string connectionString = @"Data Source=LAPTOP-B8MV83P4\SQLEXPRESS01;Initial Catalog=db_vegetableOrdering;Integrated Security=True;";  
-        private string _username;
+       string connectionString = @"Data Source=LAPTOP-B8MV83P4\SQLEXPRESS01;Initial Catalog=db_vegetableOrdering;Integrated Security=True;";
+        private string currentUser;
+        private string currentRole;
         private bool isSettingsMenuVisible = false;
-     
 
-        public SupplierForm(string username)
+
+        public SupplierForm(string username, string role)
         {
             InitializeComponent();
-            _username = username;
+            currentUser = username;
+            currentRole = role;
             LoadSuppliers();
+            lblCurrentUser.Text = $"Logged in as {username} ({role})";
+            if (currentRole == "Merchant")
+            {
+                btnSettings.Visible = false;
+                btnSuppliers.Visible = false;
+            }
         }
 
         private void btnInventory_Click(object sender, EventArgs e)
         {
-            InventoryForm inventoryForm = new InventoryForm();
+            InventoryForm inventoryForm = new InventoryForm(currentUser,currentRole);
             inventoryForm.Show();
             this.Close();
         }
 
         private void btnOrder_Click(object sender, EventArgs e)
         {
-            OrderForm orderForm = new OrderForm();
+            OrderForm orderForm = new OrderForm(currentUser, currentRole);
             orderForm.Show();
             this.Close();
         }
 
         private void btnDashboard_Click(object sender, EventArgs e)
         {
-            MainMenuForm adminForm = new MainMenuForm("admin");
-            adminForm.Show();
+            MainMenuForm mainMenu = new MainMenuForm(currentUser, currentRole);
+            mainMenu.Show();
             this.Close();
         }
 
@@ -140,11 +148,7 @@ namespace Vegetable_Ordering_System
             txtSearch.BorderStyle = BorderStyle.None;
             RoundCorners(txtSearch, 15);
 
-            if (_username == "merchant")
-            {
-                btnSettings.Visible = false;
-                btnSuppliers.Visible = false;
-            }
+         
         }
 
         private void txtSearch_Click(object sender, EventArgs e)
@@ -156,18 +160,7 @@ namespace Vegetable_Ordering_System
         private void SupplierForm_Load_1(object sender, EventArgs e)
         {
             timer1.Start();
-            if (_username == "admin")
-            {
-                lblCurrentUser.Text = "Logged in as Admin";
-            }
-            else if (_username == "merchant")
-            {
-                lblCurrentUser.Text = "Logged in as Merchant";
-            }
-            else
-            {
-                lblCurrentUser.Text = $"Logged in as {_username}";
-            }
+       
         }
 
         public void LoadSuppliers()
