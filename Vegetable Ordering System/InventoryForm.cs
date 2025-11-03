@@ -20,7 +20,7 @@ namespace Vegetable_Ordering_System
         private string currentRole;
 
         private bool isSettingsMenuVisible = false;
-       
+
         // Add this constructor to accept a username argument
         public InventoryForm(string username,string role)
         {
@@ -118,7 +118,42 @@ namespace Vegetable_Ordering_System
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-         
+            string searchText = txtSearch.Text.Trim();
+
+            if (string.IsNullOrEmpty(searchText))
+            {
+                LoadProducts();
+                return;
+            }
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                // REMOVED IsActive and Unit columns
+                SqlCommand command = new SqlCommand(
+                    "SELECT ProductID, ProductName, Category, Stock, Price FROM tbl_Products " +
+                    "WHERE ProductName LIKE @Search OR Category LIKE @Search",
+                    connection);
+                command.Parameters.AddWithValue("@Search", "%" + searchText + "%");
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                dgvInventory.Rows.Clear();
+                while (reader.Read())
+                {
+                    dgvInventory.Rows.Add(
+                        reader["ProductID"].ToString(),
+                        reader["ProductName"].ToString(),
+                        reader["Category"].ToString(),
+                        reader["Stock"].ToString(),
+                        $"₱{Convert.ToDecimal(reader["Price"]):N2}",
+                        "kg", // Default unit value
+                        "EDIT",
+                        "DELETE"
+                    );
+                }
+                connection.Close();
+            }
             txtSearch.ForeColor = Color.Black;
         }
 
@@ -146,9 +181,11 @@ namespace Vegetable_Ordering_System
         {
             timer1.Start();
             RoundCorners(btn_addstk, 20);
-         
+            LoadProducts();
 
-           
+
+
+
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -156,28 +193,34 @@ namespace Vegetable_Ordering_System
             lblTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
             lblDate.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
         }
-        public void LoadVegetables()
+        public void LoadProducts()
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-
-            SqlCommand command = new SqlCommand("SELECT VegetableID, VegetableName, Quantity, Price FROM tbl_Vegetables", connection);
-            SqlDataReader reader = command.ExecuteReader();
-
-            dataGridView1.Rows.Clear();
-            while (reader.Read())
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                dataGridView1.Rows.Add(
-                    reader["VegetableID"].ToString(),
-                    reader["VegetableName"].ToString(),
-                    reader["Quantity"].ToString(),
-                    reader["Price"].ToString(),
-                    "EDIT",
-                    "DELETE"
-                );
-            }
+                connection.Open();
 
-            connection.Close();
+                // REMOVED IsActive and Unit columns since they don't exist
+                SqlCommand command = new SqlCommand(
+                    "SELECT ProductID, ProductName, Category, Stock, Price FROM tbl_Products",
+                    connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                dgvInventory.Rows.Clear();
+                while (reader.Read())
+                {
+                    dgvInventory.Rows.Add(
+                        reader["ProductID"].ToString(),
+                        reader["ProductName"].ToString(),
+                        reader["Category"].ToString(),
+                        reader["Stock"].ToString(),
+                        $"₱{Convert.ToDecimal(reader["Price"]):N2}", // Format price properly
+                        "kg", // Default unit value
+                        "EDIT",
+                        "DELETE"
+                    );
+                }
+                connection.Close();
+            }
         }
 
         private void btnExport_Click(object sender, EventArgs e)
@@ -194,6 +237,77 @@ namespace Vegetable_Ordering_System
         {
             AddStock addStockForm = new AddStock(this);
             addStockForm.ShowDialog();
+        }
+
+        private void dgvInventory_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                if (e.ColumnIndex == 6) // EDIT column
+                {
+                    // Get product data
+                    string productId = dgvInventory.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    string productName = dgvInventory.Rows[e.RowIndex].Cells[1].Value.ToString();
+                    string category = dgvInventory.Rows[e.RowIndex].Cells[2].Value.ToString();
+                    string stock = dgvInventory.Rows[e.RowIndex].Cells[3].Value.ToString();
+                    string price = dgvInventory.Rows[e.RowIndex].Cells[4].Value.ToString();
+                    // Removed unit since it doesn't exist in database
+
+                    // Open edit form (you'll need to create this)
+                    // EditProductForm editForm = new EditProductForm(productId, productName, category, stock, price, this);
+                    // editForm.ShowDialog();
+
+                    MessageBox.Show($"Edit product: {productName}\nPrice: {price}\nStock: {stock}", "Edit Product");
+                }
+                else if (e.ColumnIndex == 7) // DELETE column
+                {
+                    string productId = dgvInventory.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    string productName = dgvInventory.Rows[e.RowIndex].Cells[1].Value.ToString();
+
+                    // Update confirmation message for hard delete
+                    if (MessageBox.Show($"Are you sure you want to PERMANENTLY delete {productName}?\n\nThis action cannot be undone.",
+                        "Confirm Permanent Delete",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        DeleteProduct(Convert.ToInt32(productId));
+                    }
+                }
+            }
+        }
+        private void DeleteProduct(int productId)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // CHANGED TO HARD DELETE (PERMANENT)
+                    SqlCommand command = new SqlCommand(
+                        "DELETE FROM tbl_Products WHERE ProductID = @ProductID",
+                        connection);
+                    command.Parameters.AddWithValue("@ProductID", productId);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Product deleted successfully!", "Success",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadProducts(); // Refresh the list
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting product: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            LoadProducts();
+            txtSearch.Clear();
         }
     }
 

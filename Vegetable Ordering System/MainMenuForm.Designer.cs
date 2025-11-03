@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenuForm));
             this.panelNav = new System.Windows.Forms.Panel();
             this.panelSettings = new System.Windows.Forms.Panel();
@@ -46,20 +49,21 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.panelDailyOrders = new System.Windows.Forms.Panel();
+            this.chartDailyOrders = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.panelStocks = new System.Windows.Forms.Panel();
-            this.label15 = new System.Windows.Forms.Label();
+            this.lblLowStock = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.panelTopSelling = new System.Windows.Forms.Panel();
-            this.label13 = new System.Windows.Forms.Label();
+            this.lblTopSelling = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.panelSales = new System.Windows.Forms.Panel();
-            this.label10 = new System.Windows.Forms.Label();
+            this.lblTotalSales = new System.Windows.Forms.Label();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panelOrderToday = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblOrdersToday = new System.Windows.Forms.Label();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -68,9 +72,12 @@
             this.lblCurrentUser = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.panelNav.SuspendLayout();
             this.panelSettings.SuspendLayout();
             this.panelDailyOrders.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDailyOrders)).BeginInit();
             this.panelStocks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.panelTopSelling.SuspendLayout();
@@ -309,6 +316,7 @@
             // panelDailyOrders
             // 
             this.panelDailyOrders.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panelDailyOrders.Controls.Add(this.chartDailyOrders);
             this.panelDailyOrders.Controls.Add(this.label11);
             this.panelDailyOrders.Location = new System.Drawing.Point(269, 370);
             this.panelDailyOrders.Name = "panelDailyOrders";
@@ -316,10 +324,26 @@
             this.panelDailyOrders.TabIndex = 17;
             this.panelDailyOrders.Paint += new System.Windows.Forms.PaintEventHandler(this.panelDailyOrders_Paint);
             // 
+            // chartDailyOrders
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chartDailyOrders.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartDailyOrders.Legends.Add(legend1);
+            this.chartDailyOrders.Location = new System.Drawing.Point(28, 54);
+            this.chartDailyOrders.Name = "chartDailyOrders";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chartDailyOrders.Series.Add(series1);
+            this.chartDailyOrders.Size = new System.Drawing.Size(1011, 281);
+            this.chartDailyOrders.TabIndex = 16;
+            this.chartDailyOrders.Text = "chart1";
+            // 
             // panelStocks
             // 
             this.panelStocks.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panelStocks.Controls.Add(this.label15);
+            this.panelStocks.Controls.Add(this.lblLowStock);
             this.panelStocks.Controls.Add(this.label14);
             this.panelStocks.Controls.Add(this.pictureBox6);
             this.panelStocks.Location = new System.Drawing.Point(1131, 210);
@@ -328,18 +352,18 @@
             this.panelStocks.TabIndex = 13;
             this.panelStocks.Paint += new System.Windows.Forms.PaintEventHandler(this.panel7_Paint);
             // 
-            // label15
+            // lblLowStock
             // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.ForeColor = System.Drawing.Color.DarkGreen;
-            this.label15.Location = new System.Drawing.Point(82, 85);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(27, 31);
-            this.label15.TabIndex = 22;
-            this.label15.Text = "4";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label15.Click += new System.EventHandler(this.label15_Click);
+            this.lblLowStock.AutoSize = true;
+            this.lblLowStock.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLowStock.ForeColor = System.Drawing.Color.DarkGreen;
+            this.lblLowStock.Location = new System.Drawing.Point(13, 87);
+            this.lblLowStock.Name = "lblLowStock";
+            this.lblLowStock.Size = new System.Drawing.Size(91, 31);
+            this.lblLowStock.TabIndex = 22;
+            this.lblLowStock.Text = "Carrots";
+            this.lblLowStock.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblLowStock.Click += new System.EventHandler(this.label15_Click);
             // 
             // label14
             // 
@@ -366,7 +390,7 @@
             // panelTopSelling
             // 
             this.panelTopSelling.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panelTopSelling.Controls.Add(this.label13);
+            this.panelTopSelling.Controls.Add(this.lblTopSelling);
             this.panelTopSelling.Controls.Add(this.label12);
             this.panelTopSelling.Controls.Add(this.pictureBox5);
             this.panelTopSelling.Location = new System.Drawing.Point(842, 210);
@@ -374,18 +398,18 @@
             this.panelTopSelling.Size = new System.Drawing.Size(211, 134);
             this.panelTopSelling.TabIndex = 12;
             // 
-            // label13
+            // lblTopSelling
             // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.ForeColor = System.Drawing.Color.DarkGreen;
-            this.label13.Location = new System.Drawing.Point(64, 85);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(91, 31);
-            this.label13.TabIndex = 21;
-            this.label13.Text = "Carrots";
-            this.label13.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label13.Click += new System.EventHandler(this.label13_Click);
+            this.lblTopSelling.AutoSize = true;
+            this.lblTopSelling.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTopSelling.ForeColor = System.Drawing.Color.DarkGreen;
+            this.lblTopSelling.Location = new System.Drawing.Point(64, 85);
+            this.lblTopSelling.Name = "lblTopSelling";
+            this.lblTopSelling.Size = new System.Drawing.Size(91, 31);
+            this.lblTopSelling.TabIndex = 21;
+            this.lblTopSelling.Text = "Carrots";
+            this.lblTopSelling.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblTopSelling.Click += new System.EventHandler(this.label13_Click);
             // 
             // label12
             // 
@@ -413,7 +437,7 @@
             // panelSales
             // 
             this.panelSales.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panelSales.Controls.Add(this.label10);
+            this.panelSales.Controls.Add(this.lblTotalSales);
             this.panelSales.Controls.Add(this.pictureBox4);
             this.panelSales.Controls.Add(this.label4);
             this.panelSales.Location = new System.Drawing.Point(561, 210);
@@ -421,17 +445,17 @@
             this.panelSales.Size = new System.Drawing.Size(200, 134);
             this.panelSales.TabIndex = 11;
             // 
-            // label10
+            // lblTotalSales
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.label10.Location = new System.Drawing.Point(37, 80);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(123, 38);
-            this.label10.TabIndex = 20;
-            this.label10.Text = "₱56,478";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblTotalSales.AutoSize = true;
+            this.lblTotalSales.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalSales.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.lblTotalSales.Location = new System.Drawing.Point(37, 80);
+            this.lblTotalSales.Name = "lblTotalSales";
+            this.lblTotalSales.Size = new System.Drawing.Size(123, 38);
+            this.lblTotalSales.TabIndex = 20;
+            this.lblTotalSales.Text = "₱56,478";
+            this.lblTotalSales.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // pictureBox4
             // 
@@ -458,7 +482,7 @@
             // panelOrderToday
             // 
             this.panelOrderToday.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panelOrderToday.Controls.Add(this.label3);
+            this.panelOrderToday.Controls.Add(this.lblOrdersToday);
             this.panelOrderToday.Controls.Add(this.pictureBox3);
             this.panelOrderToday.Controls.Add(this.label2);
             this.panelOrderToday.Location = new System.Drawing.Point(277, 210);
@@ -466,17 +490,17 @@
             this.panelOrderToday.Size = new System.Drawing.Size(200, 134);
             this.panelOrderToday.TabIndex = 10;
             // 
-            // label3
+            // lblOrdersToday
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.label3.Location = new System.Drawing.Point(68, 80);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(49, 38);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "30";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblOrdersToday.AutoSize = true;
+            this.lblOrdersToday.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOrdersToday.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.lblOrdersToday.Location = new System.Drawing.Point(68, 80);
+            this.lblOrdersToday.Name = "lblOrdersToday";
+            this.lblOrdersToday.Size = new System.Drawing.Size(49, 38);
+            this.lblOrdersToday.TabIndex = 19;
+            this.lblOrdersToday.Text = "30";
+            this.lblOrdersToday.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // pictureBox3
             // 
@@ -564,12 +588,23 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(1295, 123);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 45;
+            this.btnRefresh.Text = "button1";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // MainMenuForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1382, 910);
+            this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panelStocks);
@@ -592,6 +627,7 @@
             this.panelSettings.ResumeLayout(false);
             this.panelDailyOrders.ResumeLayout(false);
             this.panelDailyOrders.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDailyOrders)).EndInit();
             this.panelStocks.ResumeLayout(false);
             this.panelStocks.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
@@ -626,14 +662,14 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblOrdersToday;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label lblTotalSales;
         private System.Windows.Forms.PictureBox pictureBox5;
-        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label lblTopSelling;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label lblLowStock;
         private System.Windows.Forms.PictureBox pictureBox6;
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Panel panelSettings;
@@ -649,6 +685,9 @@
         private System.Windows.Forms.Label lblCurrentUser;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer timer2;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartDailyOrders;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }
 

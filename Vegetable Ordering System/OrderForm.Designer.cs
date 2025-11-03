@@ -53,12 +53,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.btnPlaceOrder = new System.Windows.Forms.Button();
-            this.btnDraft = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.lblDate1 = new System.Windows.Forms.Label();
+            this.lblTime1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -361,6 +360,7 @@
             this.btnBarcode.TabIndex = 41;
             this.btnBarcode.Text = "Scan Barcode";
             this.btnBarcode.UseVisualStyleBackColor = false;
+            this.btnBarcode.Click += new System.EventHandler(this.btnBarcode_Click);
             // 
             // label3
             // 
@@ -378,7 +378,6 @@
             // 
             this.panel3.BackColor = System.Drawing.Color.WhiteSmoke;
             this.panel3.Controls.Add(this.btnPlaceOrder);
-            this.panel3.Controls.Add(this.btnDraft);
             this.panel3.Controls.Add(this.groupBox1);
             this.panel3.Controls.Add(this.lblTotal);
             this.panel3.Controls.Add(this.dataGridViewOrderSummary);
@@ -400,26 +399,14 @@
             this.btnPlaceOrder.TabIndex = 46;
             this.btnPlaceOrder.Text = "Place Order";
             this.btnPlaceOrder.UseVisualStyleBackColor = false;
-            // 
-            // btnDraft
-            // 
-            this.btnDraft.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnDraft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDraft.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDraft.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnDraft.Location = new System.Drawing.Point(15, 646);
-            this.btnDraft.Name = "btnDraft";
-            this.btnDraft.Size = new System.Drawing.Size(205, 45);
-            this.btnDraft.TabIndex = 45;
-            this.btnDraft.Text = "Save Draft";
-            this.btnDraft.UseVisualStyleBackColor = false;
+            this.btnPlaceOrder.Click += new System.EventHandler(this.btnPlaceOrder_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.lblDate1);
+            this.groupBox1.Controls.Add(this.lblTime1);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.comboBox1);
             this.groupBox1.Controls.Add(this.label6);
@@ -453,27 +440,28 @@
             this.label10.TabIndex = 49;
             this.label10.Text = "Order ID";
             // 
-            // label8
+            // lblDate1
             // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label8.Location = new System.Drawing.Point(12, 214);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(193, 23);
-            this.label8.TabIndex = 42;
-            this.label8.Text = "dddd, MMMM dd, yyyy";
+            this.lblDate1.AutoSize = true;
+            this.lblDate1.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDate1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblDate1.Location = new System.Drawing.Point(12, 214);
+            this.lblDate1.Name = "lblDate1";
+            this.lblDate1.Size = new System.Drawing.Size(193, 23);
+            this.lblDate1.TabIndex = 42;
+            this.lblDate1.Text = "dddd, MMMM dd, yyyy";
+            this.lblDate1.Click += new System.EventHandler(this.label8_Click);
             // 
-            // label9
+            // lblTime1
             // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label9.Location = new System.Drawing.Point(241, 214);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(99, 23);
-            this.label9.TabIndex = 41;
-            this.label9.Text = "hh:mm:ss tt";
+            this.lblTime1.AutoSize = true;
+            this.lblTime1.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTime1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTime1.Location = new System.Drawing.Point(241, 214);
+            this.lblTime1.Name = "lblTime1";
+            this.lblTime1.Size = new System.Drawing.Size(99, 23);
+            this.lblTime1.TabIndex = 41;
+            this.lblTime1.Text = "hh:mm:ss tt";
             // 
             // label7
             // 
@@ -603,7 +591,7 @@
             this.MinimizeBox = false;
             this.Name = "OrderForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Mikay\'s Vegetable";
+            this.Text = "x";
             this.Load += new System.EventHandler(this.OrderForm_Load);
             this.panelNav.ResumeLayout(false);
             this.panelSettings.ResumeLayout(false);
@@ -651,11 +639,10 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Button btnPlaceOrder;
-        private System.Windows.Forms.Button btnDraft;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblDate1;
+        private System.Windows.Forms.Label lblTime1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Panel panel1;

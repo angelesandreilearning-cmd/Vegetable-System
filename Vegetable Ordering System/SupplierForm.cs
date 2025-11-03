@@ -60,6 +60,8 @@ namespace Vegetable_Ordering_System
 
             isSettingsMenuVisible = !isSettingsMenuVisible;
             panelSettings.Visible = isSettingsMenuVisible;
+            panelSettings.Location = new Point(btnSettings.Left, btnSettings.Bottom);
+            panelSettings.BringToFront();
         }
 
         private void panelSettings_Paint(object sender, PaintEventArgs e)
@@ -157,11 +159,7 @@ namespace Vegetable_Ordering_System
             txtSearch.Clear();
         }
 
-        private void SupplierForm_Load_1(object sender, EventArgs e)
-        {
-            timer1.Start();
-       
-        }
+      
 
         public void LoadSuppliers()
         {
@@ -191,7 +189,41 @@ namespace Vegetable_Ordering_System
         }   
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
+            string searchText = txtSearch.Text.Trim();
 
+            if (string.IsNullOrEmpty(searchText))
+            {
+                LoadSuppliers();
+                return;
+            }
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = @"SELECT SupplierID, SupplierName, Contact, Address, Email, Phone 
+                        FROM tbl_Suppliers 
+                        WHERE SupplierName LIKE @Search OR Contact LIKE @Search OR Email LIKE @Search";
+
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Search", "%" + searchText + "%");
+
+                SqlDataReader reader = command.ExecuteReader();
+                dgv_supplier.Rows.Clear();
+
+                while (reader.Read())
+                {
+                    dgv_supplier.Rows.Add(
+                        reader["SupplierID"].ToString(),
+                        reader["SupplierName"].ToString(),
+                        reader["Contact"].ToString(),
+                        reader["Address"].ToString(),
+                        reader["Email"].ToString(),
+                        reader["Phone"].ToString(),
+                        "EDIT", "DELETE"
+                    );
+                }
+                connection.Close();
+            }
         }
 
     
@@ -203,30 +235,41 @@ namespace Vegetable_Ordering_System
         }
         private void deleteSupplier(int supplierID)
         {
-            SqlConnection conn = new SqlConnection(connectionString);
-            conn.Open();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand command = new SqlCommand("DELETE FROM tbl_Suppliers WHERE SupplierID = @SupplierID", conn);
+                    command.Parameters.AddWithValue("@SupplierID", supplierID);
+                    int rowsAffected = command.ExecuteNonQuery();
 
-            SqlCommand command = new SqlCommand("DELETE FROM tbl_Suppliers WHERE SupplierID = @SupplierID", conn);
-            command.Parameters.AddWithValue("@SupplierID", supplierID);
-            command.ExecuteNonQuery();
-
-            MessageBox.Show("Supplier successfully deleted!", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            conn.Close();
-
-            LoadSuppliers(); 
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Supplier successfully deleted!", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadSuppliers();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting supplier: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void dgv_supplier_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0) return;
+
             switch (e.ColumnIndex)
             {
+                case 6:
+                    EditSupplier(e.RowIndex);
+                    break;
+
                 case 7:
-                    if (MessageBox.Show(
-                        "Are you sure you want to delete this supplier?",
-                        "DELETE RECORD",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question
-                    ) == DialogResult.Yes)
+                    if (MessageBox.Show("Are you sure you want to delete this supplier?",
+                        "DELETE RECORD", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         int supplierID = Convert.ToInt32(dgv_supplier.Rows[e.RowIndex].Cells[0].Value.ToString());
                         deleteSupplier(supplierID);
@@ -234,11 +277,26 @@ namespace Vegetable_Ordering_System
                     break;
             }
         }
+        private void EditSupplier(int rowIndex)
+        {
+            int supplierID = Convert.ToInt32(dgv_supplier.Rows[rowIndex].Cells[0].Value);
+            string name = dgv_supplier.Rows[rowIndex].Cells[1].Value.ToString();
+            MessageBox.Show($"Edit supplier: {name}", "Edit Supplier");
+        }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             lblTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
             lblDate.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+        }
+
+        private void SupplierForm_Load_1(object sender, EventArgs e)
+        {
+            RoundCorners(btnAddSupplier, 20);
+            txtSearch.BorderStyle = BorderStyle.None;
+            RoundCorners(txtSearch, 15);
+            timer1.Start();
+
         }
     }
 }

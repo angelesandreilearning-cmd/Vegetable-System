@@ -129,20 +129,80 @@ namespace Vegetable_Ordering_System
 
         private void btnAddSupplier_Click(object sender, EventArgs e)
         {
-            SqlConnection conn = new SqlConnection(connectionString);
-            conn.Open();
-            SqlCommand command = new SqlCommand(
-    "INSERT INTO tbl_Suppliers (SupplierName, Contact, Address, Email) " +
-    "VALUES (@name, @contact, @address, @email)", conn);
+            if (!ValidateAllFields())
+                return;
 
-            // 🎯 Add values from your input fields (TextBoxes)
-            command.Parameters.AddWithValue("@name", txtName.Text);
-            command.Parameters.AddWithValue("@contact", txtContact.Text);
-            command.Parameters.AddWithValue("@address", txtAddress.Text);
-            command.Parameters.AddWithValue("@email", txtEmail.Text);
-          
-            command.ExecuteNonQuery();  
-            _parentform.LoadSuppliers();    
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand command = new SqlCommand(
+                        "INSERT INTO tbl_Suppliers (SupplierName, Contact, Address, Email, Phone) " +
+                        "VALUES (@name, @contact, @address, @email, '')", conn);
+
+                    command.Parameters.AddWithValue("@name", txtName.Text.Trim());
+                    command.Parameters.AddWithValue("@contact", txtContact.Text.Trim());
+                    command.Parameters.AddWithValue("@address", txtAddress.Text.Trim());
+                    command.Parameters.AddWithValue("@email", txtEmail.Text.Trim());
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Supplier added successfully!", "Success",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        _parentform.LoadSuppliers();
+                        this.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding supplier: {ex.Message}", "Database Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private bool ValidateAllFields()
+        {
+            bool isValid = true;
+            errorProvider1.Clear();
+
+            if (string.IsNullOrWhiteSpace(txtName.Text))
+            {
+                errorProvider1.SetError(txtName, "Supplier name is required.");
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtContact.Text))
+            {
+                errorProvider1.SetError(txtContact, "Contact number is required.");
+                isValid = false;
+            }
+            else if (!Regex.IsMatch(txtContact.Text, @"^09\d{9}$"))
+            {
+                errorProvider1.SetError(txtContact, "Contact must start with 09 and have 11 digits.");
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtEmail.Text))
+            {
+                errorProvider1.SetError(txtEmail, "Email is required.");
+                isValid = false;
+            }
+            else if (!Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                errorProvider1.SetError(txtEmail, "Please enter a valid email address.");
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtAddress.Text))
+            {
+                errorProvider1.SetError(txtAddress, "Address is required.");
+                isValid = false;
+            }
+
+            return isValid;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

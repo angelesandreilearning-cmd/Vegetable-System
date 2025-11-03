@@ -7,6 +7,7 @@ namespace Vegetable_Ordering_System
     public partial class ProductItemControl : UserControl
     {
         public int ProductID { get; set; }
+        private decimal _price;
 
         public string ProductName
         {
@@ -16,13 +17,14 @@ namespace Vegetable_Ordering_System
 
         public decimal Price
         {
-            get
+            get => _price; // Return stored price
+            set
             {
-                string text = lblPrice.Text.Replace("₱", "").Replace("/kg", "").Trim();
-                return decimal.TryParse(text, out var result) ? result : 0;
+                _price = value;
+                lblPrice.Text = $"₱{value:N2} / kg";
             }
-            set => lblPrice.Text = $"₱{value:N2} / kg";
         }
+
 
         public int Stock
         {
@@ -82,7 +84,7 @@ namespace Vegetable_Ordering_System
         public void LoadProduct(string name, decimal price, int stock, Image image)
         {
             lblName.Text = name;
-            lblPrice.Text = $"₱{price:N2} / kg";
+            Price = price; // This sets both _price and updates the label
             lblStock.Text = $"Stock: {stock} kg";
             pictureBox1.Image = image;
         }
@@ -99,8 +101,7 @@ namespace Vegetable_Ordering_System
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            ProductImageClicked?.Invoke(this, new ProductEventArgs(ProductID, ProductName, Price, 1));
-
+            ProductImageClicked?.Invoke(this, new ProductEventArgs(ProductID, ProductName, Price, Quantity));
 
         }
     }
