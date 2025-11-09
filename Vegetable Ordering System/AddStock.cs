@@ -18,6 +18,7 @@ namespace Vegetable_Ordering_System
     {
         string connectionString = @"Data Source=LAPTOP-B8MV83P4\SQLEXPRESS01;Initial Catalog=db_vegetableOrdering;Integrated Security=True;";
         private InventoryForm _parentform;
+        private string imageFilePath = "";
         public AddStock(InventoryForm parentform)
         {
             InitializeComponent();
@@ -245,14 +246,36 @@ namespace Vegetable_Ordering_System
 
             try
             {
+                string imageFileName = "";
+
+                // Copy image to application folder if one was selected
+                if (!string.IsNullOrEmpty(imageFilePath))
+                {
+                    string imagesFolder = System.IO.Path.Combine(Application.StartupPath, "ProductImages");
+
+                    // Create directory if it doesn't exist
+                    if (!System.IO.Directory.Exists(imagesFolder))
+                    {
+                        System.IO.Directory.CreateDirectory(imagesFolder);
+                    }
+
+                    // Generate unique filename
+                    string extension = System.IO.Path.GetExtension(imageFilePath);
+                    imageFileName = $"{Guid.NewGuid()}{extension}";
+                    string destinationPath = System.IO.Path.Combine(imagesFolder, imageFileName);
+
+                    // Copy the file
+                    System.IO.File.Copy(imageFilePath, destinationPath, true);
+                }
+
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
                     string query = @"INSERT INTO tbl_Products 
-                     (ProductName, Category, Stock, Price, SupplierID)
-                     VALUES
-                     (@name, @category, @stock, @price, @supplierID)";
+                 (ProductName, Category, Stock, Price, SupplierID, ImagePath)
+                 VALUES
+                 (@name, @category, @stock, @price, @supplierID, @imagePath)";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -261,7 +284,7 @@ namespace Vegetable_Ordering_System
                         cmd.Parameters.AddWithValue("@stock", int.Parse(txtQuantity.Text));
                         cmd.Parameters.AddWithValue("@price", decimal.Parse(txtPrice.Text));
 
-                        // SIMPLIFIED: Get SupplierID directly from SelectedValue
+                        // Supplier ID
                         if (cmbSupplierName.SelectedValue != null)
                         {
                             cmd.Parameters.AddWithValue("@supplierID", cmbSupplierName.SelectedValue);
@@ -269,6 +292,16 @@ namespace Vegetable_Ordering_System
                         else
                         {
                             cmd.Parameters.AddWithValue("@supplierID", DBNull.Value);
+                        }
+
+                        // Image Path - ADD THIS
+                        if (!string.IsNullOrEmpty(imageFileName))
+                        {
+                            cmd.Parameters.AddWithValue("@imagePath", imageFileName);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@imagePath", DBNull.Value);
                         }
 
                         cmd.ExecuteNonQuery();
@@ -344,10 +377,17 @@ namespace Vegetable_Ordering_System
             txtPrice.Clear();
             txtTotalCost.Clear();
             cmbCategory.SelectedIndex = -1;
-            cmbUnit.SelectedIndex = 0; // Changed to 0 for default selection
-            cmbSupplierName.SelectedIndex = -1; // Added this line
+            cmbUnit.SelectedIndex = 0;
+            cmbSupplierName.SelectedIndex = -1;
             dtpDateDelivery.Value = DateTime.Now;
             errorProvider1.Clear();
+
+            // Clear image - ADD THESE LINES
+            imageFilePath = "";
+            if (txtImagePath != null)
+                txtImagePath.Text = "";
+            if (picProductImage != null)
+                picProductImage.Image = null;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -359,6 +399,56 @@ namespace Vegetable_Ordering_System
         private void txtTotalCost_TextChanged(object sender, EventArgs e)
         {
             // Keep this empty - needed for the event
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Image Files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)|*.bmp;*.jpg;*.jpeg;*.png;*.gif";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        // Get the selected file
+                        imageFilePath = openFileDialog.FileName;
+
+                        // Display in textbox (if you have one)
+                        if (txtImagePath != null)
+                        {
+                            txtImagePath.Text = System.IO.Path.GetFileName(imageFilePath);
+                        }
+
+                        // Optional: Display image preview if you have a PictureBox
+                        if (picProductImage != null)
+                        {
+                            Image originalImage = Image.FromFile(imageFilePath);
+                            picProductImage.Image = originalImage;
+                        }
+
+                        MessageBox.Show("Image selected successfully!", "Success",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error loading image: {ex.Message}", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void txtTotalCost_TextChanged_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

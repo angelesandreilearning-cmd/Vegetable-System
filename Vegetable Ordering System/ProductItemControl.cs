@@ -45,7 +45,7 @@ namespace Vegetable_Ordering_System
         public Image ProductImage
         {
             get => pictureBox1.Image;
-            set => pictureBox1.Image = value;
+            set => pictureBox1.Image = value ?? GetDefaultImage();
         }
 
         // EVENTS
@@ -59,6 +59,25 @@ namespace Vegetable_Ordering_System
          
         }
 
+        private Image GetDefaultImage()
+        {
+            Bitmap bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.LightGray);
+                using (Font font = new Font("Arial", 8))
+                using (StringFormat sf = new StringFormat()
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                })
+                {
+                    g.DrawString("No Image", font, Brushes.DarkGray,
+                        new Rectangle(0, 0, bmp.Width, bmp.Height), sf);
+                }
+            }
+            return bmp;
+        }
         private void Button1_Click(object sender, EventArgs e)
         {
             AddToOrderClicked?.Invoke(this, new ProductEventArgs(ProductID, ProductName, Price, Quantity));
@@ -84,9 +103,9 @@ namespace Vegetable_Ordering_System
         public void LoadProduct(string name, decimal price, int stock, Image image)
         {
             lblName.Text = name;
-            Price = price; // This sets both _price and updates the label
+            Price = price;
             lblStock.Text = $"Stock: {stock} kg";
-            pictureBox1.Image = image;
+            ProductImage = image;
         }
 
         private void lblEditPrice_Click(object sender, EventArgs e)

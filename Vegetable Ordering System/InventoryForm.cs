@@ -309,6 +309,21 @@ namespace Vegetable_Ordering_System
             LoadProducts();
             txtSearch.Clear();
         }
+
+        // Add this logout handler to `InventoryForm.cs` (near other event handlers)
+        private void label8_Click(object sender, EventArgs e)
+        {
+            
+            var result = MessageBox.Show("Are you sure you want to logout?", "Logout",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                this.Hide();
+                Log_In loginForm = new Log_In();
+                loginForm.Show();
+                this.Close();
+            }
+        }
     }
 
 }

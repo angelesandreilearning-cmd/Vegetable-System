@@ -54,6 +54,10 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.btnPlaceOrder = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtChange = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtTotalPayment = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.lblDate1 = new System.Windows.Forms.Label();
@@ -67,7 +71,9 @@
             this.dataGridViewOrderSummary = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnAddProduct = new System.Windows.Forms.Button();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
             this.panelNav.SuspendLayout();
             this.panelSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -284,13 +290,14 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(249)))), ((int)(((byte)(248)))));
+            this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.lblDate);
             this.panel2.Controls.Add(this.lblTime);
             this.panel2.Controls.Add(this.lblCurrentUser);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Location = new System.Drawing.Point(200, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1182, 100);
+            this.panel2.Size = new System.Drawing.Size(1301, 100);
             this.panel2.TabIndex = 37;
             // 
             // lblDate
@@ -299,7 +306,7 @@
             this.lblDate.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(72)))), ((int)(((byte)(58)))));
             this.lblDate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblDate.Location = new System.Drawing.Point(814, 61);
+            this.lblDate.Location = new System.Drawing.Point(898, 52);
             this.lblDate.Name = "lblDate";
             this.lblDate.Size = new System.Drawing.Size(193, 23);
             this.lblDate.TabIndex = 40;
@@ -312,7 +319,7 @@
             this.lblTime.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(72)))), ((int)(((byte)(58)))));
             this.lblTime.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTime.Location = new System.Drawing.Point(1054, 61);
+            this.lblTime.Location = new System.Drawing.Point(1137, 52);
             this.lblTime.Name = "lblTime";
             this.lblTime.Size = new System.Drawing.Size(99, 23);
             this.lblTime.TabIndex = 39;
@@ -324,7 +331,7 @@
             this.lblCurrentUser.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCurrentUser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(72)))), ((int)(((byte)(58)))));
             this.lblCurrentUser.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblCurrentUser.Location = new System.Drawing.Point(948, 28);
+            this.lblCurrentUser.Location = new System.Drawing.Point(952, 28);
             this.lblCurrentUser.Name = "lblCurrentUser";
             this.lblCurrentUser.Size = new System.Drawing.Size(162, 23);
             this.lblCurrentUser.TabIndex = 38;
@@ -354,7 +361,7 @@
             this.btnBarcode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBarcode.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBarcode.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnBarcode.Location = new System.Drawing.Point(1211, 125);
+            this.btnBarcode.Location = new System.Drawing.Point(1359, 133);
             this.btnBarcode.Name = "btnBarcode";
             this.btnBarcode.Size = new System.Drawing.Size(129, 45);
             this.btnBarcode.TabIndex = 41;
@@ -384,7 +391,7 @@
             this.panel3.Controls.Add(this.label3);
             this.panel3.Location = new System.Drawing.Point(923, 184);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(500, 714);
+            this.panel3.Size = new System.Drawing.Size(565, 714);
             this.panel3.TabIndex = 44;
             // 
             // btnPlaceOrder
@@ -393,7 +400,7 @@
             this.btnPlaceOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPlaceOrder.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPlaceOrder.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnPlaceOrder.Location = new System.Drawing.Point(240, 646);
+            this.btnPlaceOrder.Location = new System.Drawing.Point(370, 648);
             this.btnPlaceOrder.Name = "btnPlaceOrder";
             this.btnPlaceOrder.Size = new System.Drawing.Size(177, 45);
             this.btnPlaceOrder.TabIndex = 46;
@@ -403,6 +410,10 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.txtChange);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.txtTotalPayment);
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.lblDate1);
@@ -414,9 +425,47 @@
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Location = new System.Drawing.Point(15, 293);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(403, 322);
+            this.groupBox1.Size = new System.Drawing.Size(532, 322);
             this.groupBox1.TabIndex = 43;
             this.groupBox1.TabStop = false;
+            // 
+            // txtChange
+            // 
+            this.txtChange.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
+            this.txtChange.Location = new System.Drawing.Point(355, 131);
+            this.txtChange.Name = "txtChange";
+            this.txtChange.Size = new System.Drawing.Size(132, 30);
+            this.txtChange.TabIndex = 54;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label5.Location = new System.Drawing.Point(351, 100);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(69, 23);
+            this.label5.TabIndex = 53;
+            this.label5.Text = "Change";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label2.Location = new System.Drawing.Point(181, 100);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(119, 23);
+            this.label2.TabIndex = 52;
+            this.label2.Text = "Total Payment";
+            // 
+            // txtTotalPayment
+            // 
+            this.txtTotalPayment.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
+            this.txtTotalPayment.Location = new System.Drawing.Point(185, 134);
+            this.txtTotalPayment.Name = "txtTotalPayment";
+            this.txtTotalPayment.Size = new System.Drawing.Size(132, 30);
+            this.txtTotalPayment.TabIndex = 51;
             // 
             // label11
             // 
@@ -480,7 +529,7 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(16, 134);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(369, 31);
+            this.comboBox1.Size = new System.Drawing.Size(131, 31);
             this.comboBox1.TabIndex = 47;
             // 
             // label6
@@ -536,7 +585,7 @@
             this.dataGridViewOrderSummary.ReadOnly = true;
             this.dataGridViewOrderSummary.RowHeadersWidth = 51;
             this.dataGridViewOrderSummary.RowTemplate.Height = 24;
-            this.dataGridViewOrderSummary.Size = new System.Drawing.Size(459, 186);
+            this.dataGridViewOrderSummary.Size = new System.Drawing.Size(532, 186);
             this.dataGridViewOrderSummary.TabIndex = 42;
             this.dataGridViewOrderSummary.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewOrderSummary_CellContentClick);
             // 
@@ -557,19 +606,44 @@
             this.panel1.Size = new System.Drawing.Size(200, 186);
             this.panel1.TabIndex = 45;
             // 
-            // btnAddProduct
+            // txtSearch
             // 
-            this.btnAddProduct.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnAddProduct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAddProduct.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAddProduct.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnAddProduct.Location = new System.Drawing.Point(219, 125);
-            this.btnAddProduct.Name = "btnAddProduct";
-            this.btnAddProduct.Size = new System.Drawing.Size(275, 45);
-            this.btnAddProduct.TabIndex = 46;
-            this.btnAddProduct.Text = "Add Product";
-            this.btnAddProduct.UseVisualStyleBackColor = false;
-            this.btnAddProduct.Click += new System.EventHandler(this.btnAddProduct_Click);
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSearch.ForeColor = System.Drawing.SystemColors.ScrollBar;
+            this.txtSearch.Location = new System.Drawing.Point(219, 144);
+            this.txtSearch.Multiline = true;
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(546, 30);
+            this.txtSearch.TabIndex = 16;
+            this.txtSearch.Text = "Search";
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.btnSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSearch.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnSearch.Location = new System.Drawing.Point(771, 141);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(129, 37);
+            this.btnSearch.TabIndex = 46;
+            this.btnSearch.Text = "Search";
+            this.btnSearch.UseVisualStyleBackColor = false;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.label8.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label8.Location = new System.Drawing.Point(1224, 28);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(64, 23);
+            this.label8.TabIndex = 47;
+            this.label8.Text = "Logout";
+            this.label8.Click += new System.EventHandler(this.label8_Click_1);
             // 
             // OrderForm
             // 
@@ -577,7 +651,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1500, 910);
-            this.Controls.Add(this.btnAddProduct);
+            this.Controls.Add(this.btnSearch);
+            this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.flowLayoutPanel2);
@@ -604,6 +679,7 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOrderSummary)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -646,7 +722,13 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button btnAddProduct;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.TextBox txtChange;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txtTotalPayment;
+        private System.Windows.Forms.Label label8;
     }
 }
 

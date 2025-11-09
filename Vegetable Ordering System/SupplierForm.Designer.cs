@@ -59,6 +59,7 @@
             this.lblCurrentUser = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label8 = new System.Windows.Forms.Label();
             this.panelNav.SuspendLayout();
             this.panelSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_supplier)).BeginInit();
@@ -282,11 +283,11 @@
             this.Column4,
             this.Column5,
             this.Column6});
-            this.dgv_supplier.Location = new System.Drawing.Point(244, 217);
+            this.dgv_supplier.Location = new System.Drawing.Point(312, 218);
             this.dgv_supplier.Name = "dgv_supplier";
             this.dgv_supplier.RowHeadersWidth = 51;
             this.dgv_supplier.RowTemplate.Height = 24;
-            this.dgv_supplier.Size = new System.Drawing.Size(1100, 395);
+            this.dgv_supplier.Size = new System.Drawing.Size(1100, 600);
             this.dgv_supplier.TabIndex = 3;
             this.dgv_supplier.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_supplier_CellContentClick);
             // 
@@ -349,7 +350,7 @@
             // 
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSearch.ForeColor = System.Drawing.Color.Gainsboro;
-            this.txtSearch.Location = new System.Drawing.Point(244, 148);
+            this.txtSearch.Location = new System.Drawing.Point(312, 148);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(879, 38);
             this.txtSearch.TabIndex = 4;
@@ -362,7 +363,7 @@
             this.btnAddSupplier.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnAddSupplier.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddSupplier.ForeColor = System.Drawing.Color.White;
-            this.btnAddSupplier.Location = new System.Drawing.Point(1163, 142);
+            this.btnAddSupplier.Location = new System.Drawing.Point(1231, 142);
             this.btnAddSupplier.Name = "btnAddSupplier";
             this.btnAddSupplier.Size = new System.Drawing.Size(181, 40);
             this.btnAddSupplier.TabIndex = 5;
@@ -381,13 +382,14 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(249)))), ((int)(((byte)(248)))));
+            this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.lblDate);
             this.panel2.Controls.Add(this.lblTime);
             this.panel2.Controls.Add(this.lblCurrentUser);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Location = new System.Drawing.Point(198, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1190, 100);
+            this.panel2.Size = new System.Drawing.Size(1304, 100);
             this.panel2.TabIndex = 38;
             // 
             // lblDate
@@ -396,11 +398,12 @@
             this.lblDate.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(72)))), ((int)(((byte)(58)))));
             this.lblDate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblDate.Location = new System.Drawing.Point(817, 61);
+            this.lblDate.Location = new System.Drawing.Point(898, 52);
             this.lblDate.Name = "lblDate";
             this.lblDate.Size = new System.Drawing.Size(193, 23);
             this.lblDate.TabIndex = 40;
             this.lblDate.Text = "dddd, MMMM dd, yyyy";
+            this.lblDate.Click += new System.EventHandler(this.lblDate_Click);
             // 
             // lblTime
             // 
@@ -408,7 +411,7 @@
             this.lblTime.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(72)))), ((int)(((byte)(58)))));
             this.lblTime.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTime.Location = new System.Drawing.Point(1054, 61);
+            this.lblTime.Location = new System.Drawing.Point(1174, 50);
             this.lblTime.Name = "lblTime";
             this.lblTime.Size = new System.Drawing.Size(99, 23);
             this.lblTime.TabIndex = 39;
@@ -420,7 +423,7 @@
             this.lblCurrentUser.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCurrentUser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(72)))), ((int)(((byte)(58)))));
             this.lblCurrentUser.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblCurrentUser.Location = new System.Drawing.Point(948, 28);
+            this.lblCurrentUser.Location = new System.Drawing.Point(952, 28);
             this.lblCurrentUser.Name = "lblCurrentUser";
             this.lblCurrentUser.Size = new System.Drawing.Size(162, 23);
             this.lblCurrentUser.TabIndex = 38;
@@ -434,9 +437,9 @@
             this.label1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label1.Location = new System.Drawing.Point(24, 28);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(109, 45);
+            this.label1.Size = new System.Drawing.Size(148, 45);
             this.label1.TabIndex = 38;
-            this.label1.Text = "Order";
+            this.label1.Text = "Supplier";
             // 
             // timer1
             // 
@@ -444,12 +447,25 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.label8.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label8.Location = new System.Drawing.Point(1224, 28);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(64, 23);
+            this.label8.TabIndex = 48;
+            this.label8.Text = "Logout";
+            this.label8.Click += new System.EventHandler(this.label8_Click);
+            // 
             // SupplierForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1382, 904);
+            this.ClientSize = new System.Drawing.Size(1500, 910);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnAddSupplier);
@@ -506,5 +522,6 @@
         private System.Windows.Forms.DataGridViewButtonColumn Column5;
         private System.Windows.Forms.DataGridViewButtonColumn Column6;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label label8;
     }
 }

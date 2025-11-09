@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
     </Reference>
@@ -90,6 +96,12 @@
     </Compile>
     <Compile Include="Log In.Designer.cs">
       <DependentUpon>Log In.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Logs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Logs.Designer.cs">
+      <DependentUpon>Logs.cs</DependentUpon>
     </Compile>
     <Compile Include="MainMenuForm.cs">
       <SubType>Form</SubType>
@@ -149,6 +161,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Log In.resx">
       <DependentUpon>Log In.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Logs.resx">
+      <DependentUpon>Logs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainMenuForm.resx">
       <DependentUpon>MainMenuForm.cs</DependentUpon>

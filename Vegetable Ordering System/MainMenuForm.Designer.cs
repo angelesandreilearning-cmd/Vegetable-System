@@ -32,6 +32,12 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenuForm));
             this.panelNav = new System.Windows.Forms.Panel();
             this.panelSettings = new System.Windows.Forms.Panel();
@@ -53,18 +59,14 @@
             this.panelStocks = new System.Windows.Forms.Panel();
             this.lblLowStock = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.panelTopSelling = new System.Windows.Forms.Panel();
             this.lblTopSelling = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.panelSales = new System.Windows.Forms.Panel();
             this.lblTotalSales = new System.Windows.Forms.Label();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panelOrderToday = new System.Windows.Forms.Panel();
             this.lblOrdersToday = new System.Windows.Forms.Label();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblDate = new System.Windows.Forms.Label();
@@ -73,20 +75,28 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.btnRefresh = new System.Windows.Forms.Button();
+            this.chartTopVegetables = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.Sales = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.chartMonthlySales = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.panelNav.SuspendLayout();
             this.panelSettings.SuspendLayout();
             this.panelDailyOrders.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartDailyOrders)).BeginInit();
             this.panelStocks.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.panelTopSelling.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.panelSales.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.panelOrderToday.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartTopVegetables)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Sales)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartMonthlySales)).BeginInit();
             this.SuspendLayout();
             // 
             // panelNav
@@ -100,7 +110,7 @@
             this.panelNav.Controls.Add(this.btnDashboard);
             this.panelNav.Location = new System.Drawing.Point(0, 184);
             this.panelNav.Name = "panelNav";
-            this.panelNav.Size = new System.Drawing.Size(200, 730);
+            this.panelNav.Size = new System.Drawing.Size(200, 788);
             this.panelNav.TabIndex = 2;
             // 
             // panelSettings
@@ -117,7 +127,6 @@
             this.panelSettings.Size = new System.Drawing.Size(200, 139);
             this.panelSettings.TabIndex = 5;
             this.panelSettings.Visible = false;
-            this.panelSettings.Paint += new System.Windows.Forms.PaintEventHandler(this.panelSettings_Paint);
             // 
             // btnAbout
             // 
@@ -133,7 +142,6 @@
             this.btnAbout.TabIndex = 6;
             this.btnAbout.Text = "About";
             this.btnAbout.UseVisualStyleBackColor = false;
-            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // btnBackup
             // 
@@ -149,7 +157,6 @@
             this.btnBackup.TabIndex = 5;
             this.btnBackup.Text = "Backup & Logs";
             this.btnBackup.UseVisualStyleBackColor = false;
-            this.btnBackup.Click += new System.EventHandler(this.btnBackup_Click);
             // 
             // btnSecurity
             // 
@@ -165,7 +172,6 @@
             this.btnSecurity.TabIndex = 3;
             this.btnSecurity.Text = "Security";
             this.btnSecurity.UseVisualStyleBackColor = false;
-            this.btnSecurity.Click += new System.EventHandler(this.btnSecurity_Click);
             // 
             // btnSystem
             // 
@@ -181,7 +187,6 @@
             this.btnSystem.TabIndex = 2;
             this.btnSystem.Text = "System Configuration";
             this.btnSystem.UseVisualStyleBackColor = false;
-            this.btnSystem.Click += new System.EventHandler(this.btnSystem_Click);
             // 
             // btnUsers
             // 
@@ -318,9 +323,9 @@
             this.panelDailyOrders.BackColor = System.Drawing.Color.WhiteSmoke;
             this.panelDailyOrders.Controls.Add(this.chartDailyOrders);
             this.panelDailyOrders.Controls.Add(this.label11);
-            this.panelDailyOrders.Location = new System.Drawing.Point(269, 370);
+            this.panelDailyOrders.Location = new System.Drawing.Point(268, 313);
             this.panelDailyOrders.Name = "panelDailyOrders";
-            this.panelDailyOrders.Size = new System.Drawing.Size(1062, 353);
+            this.panelDailyOrders.Size = new System.Drawing.Size(1186, 353);
             this.panelDailyOrders.TabIndex = 17;
             this.panelDailyOrders.Paint += new System.Windows.Forms.PaintEventHandler(this.panelDailyOrders_Paint);
             // 
@@ -346,7 +351,7 @@
             this.panelStocks.Controls.Add(this.lblLowStock);
             this.panelStocks.Controls.Add(this.label14);
             this.panelStocks.Controls.Add(this.pictureBox6);
-            this.panelStocks.Location = new System.Drawing.Point(1131, 210);
+            this.panelStocks.Location = new System.Drawing.Point(1192, 153);
             this.panelStocks.Name = "panelStocks";
             this.panelStocks.Size = new System.Drawing.Size(200, 134);
             this.panelStocks.TabIndex = 13;
@@ -377,23 +382,13 @@
             this.label14.Text = "Low Stock\r\nItems\r\n\r\n\r\n\r\n";
             this.label14.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // pictureBox6
-            // 
-            this.pictureBox6.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design__3__removebg_preview;
-            this.pictureBox6.Location = new System.Drawing.Point(-13, 0);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(107, 111);
-            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox6.TabIndex = 22;
-            this.pictureBox6.TabStop = false;
-            // 
             // panelTopSelling
             // 
             this.panelTopSelling.BackColor = System.Drawing.Color.WhiteSmoke;
             this.panelTopSelling.Controls.Add(this.lblTopSelling);
             this.panelTopSelling.Controls.Add(this.label12);
             this.panelTopSelling.Controls.Add(this.pictureBox5);
-            this.panelTopSelling.Location = new System.Drawing.Point(842, 210);
+            this.panelTopSelling.Location = new System.Drawing.Point(903, 153);
             this.panelTopSelling.Name = "panelTopSelling";
             this.panelTopSelling.Size = new System.Drawing.Size(211, 134);
             this.panelTopSelling.TabIndex = 12;
@@ -423,24 +418,13 @@
             this.label12.Text = "Top Selling\r\nVegetable\r\n\r\n";
             this.label12.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // pictureBox5
-            // 
-            this.pictureBox5.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design__2__removebg_preview;
-            this.pictureBox5.Location = new System.Drawing.Point(-12, 3);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(93, 93);
-            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox5.TabIndex = 21;
-            this.pictureBox5.TabStop = false;
-            this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
-            // 
             // panelSales
             // 
             this.panelSales.BackColor = System.Drawing.Color.WhiteSmoke;
             this.panelSales.Controls.Add(this.lblTotalSales);
-            this.panelSales.Controls.Add(this.pictureBox4);
+            this.panelSales.Controls.Add(this.Sales);
             this.panelSales.Controls.Add(this.label4);
-            this.panelSales.Location = new System.Drawing.Point(561, 210);
+            this.panelSales.Location = new System.Drawing.Point(622, 153);
             this.panelSales.Name = "panelSales";
             this.panelSales.Size = new System.Drawing.Size(200, 134);
             this.panelSales.TabIndex = 11;
@@ -456,16 +440,6 @@
             this.lblTotalSales.TabIndex = 20;
             this.lblTotalSales.Text = "₱56,478";
             this.lblTotalSales.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // pictureBox4
-            // 
-            this.pictureBox4.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design_removebg_preview__1_;
-            this.pictureBox4.Location = new System.Drawing.Point(20, 18);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(61, 62);
-            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox4.TabIndex = 20;
-            this.pictureBox4.TabStop = false;
             // 
             // label4
             // 
@@ -485,7 +459,7 @@
             this.panelOrderToday.Controls.Add(this.lblOrdersToday);
             this.panelOrderToday.Controls.Add(this.pictureBox3);
             this.panelOrderToday.Controls.Add(this.label2);
-            this.panelOrderToday.Location = new System.Drawing.Point(277, 210);
+            this.panelOrderToday.Location = new System.Drawing.Point(338, 153);
             this.panelOrderToday.Name = "panelOrderToday";
             this.panelOrderToday.Size = new System.Drawing.Size(200, 134);
             this.panelOrderToday.TabIndex = 10;
@@ -501,16 +475,6 @@
             this.lblOrdersToday.TabIndex = 19;
             this.lblOrdersToday.Text = "30";
             this.lblOrdersToday.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Image = global::Vegetable_Ordering_System.Properties.Resources.cart;
-            this.pictureBox3.Location = new System.Drawing.Point(20, 34);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(43, 46);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox3.TabIndex = 18;
-            this.pictureBox3.TabStop = false;
             // 
             // label2
             // 
@@ -539,11 +503,12 @@
             this.lblDate.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
             this.lblDate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblDate.Location = new System.Drawing.Point(813, 51);
+            this.lblDate.Location = new System.Drawing.Point(898, 52);
             this.lblDate.Name = "lblDate";
             this.lblDate.Size = new System.Drawing.Size(193, 23);
             this.lblDate.TabIndex = 43;
             this.lblDate.Text = "dddd, MMMM dd, yyyy";
+            this.lblDate.Click += new System.EventHandler(this.lblDate_Click);
             // 
             // lblTime
             // 
@@ -551,7 +516,7 @@
             this.lblTime.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
             this.lblTime.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTime.Location = new System.Drawing.Point(1052, 51);
+            this.lblTime.Location = new System.Drawing.Point(1174, 50);
             this.lblTime.Name = "lblTime";
             this.lblTime.Size = new System.Drawing.Size(99, 23);
             this.lblTime.TabIndex = 42;
@@ -563,7 +528,7 @@
             this.lblCurrentUser.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCurrentUser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
             this.lblCurrentUser.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblCurrentUser.Location = new System.Drawing.Point(946, 18);
+            this.lblCurrentUser.Location = new System.Drawing.Point(952, 28);
             this.lblCurrentUser.Name = "lblCurrentUser";
             this.lblCurrentUser.Size = new System.Drawing.Size(162, 23);
             this.lblCurrentUser.TabIndex = 41;
@@ -572,39 +537,122 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.lblDate);
             this.panel2.Controls.Add(this.lblTime);
             this.panel2.Controls.Add(this.lblCurrentUser);
             this.panel2.Location = new System.Drawing.Point(200, 1);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1182, 100);
+            this.panel2.Size = new System.Drawing.Size(1302, 100);
             this.panel2.TabIndex = 44;
-            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // timer1
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick_1);
             // 
-            // btnRefresh
+            // timer2
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(1295, 123);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
-            this.btnRefresh.TabIndex = 45;
-            this.btnRefresh.Text = "button1";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
+            // 
+            // chartTopVegetables
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.chartTopVegetables.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chartTopVegetables.Legends.Add(legend2);
+            this.chartTopVegetables.Location = new System.Drawing.Point(268, 682);
+            this.chartTopVegetables.Name = "chartTopVegetables";
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chartTopVegetables.Series.Add(series2);
+            this.chartTopVegetables.Size = new System.Drawing.Size(435, 195);
+            this.chartTopVegetables.TabIndex = 46;
+            this.chartTopVegetables.Text = "chart1";
+            this.chartTopVegetables.Click += new System.EventHandler(this.chartTopVegetables_Click);
+            // 
+            // pictureBox6
+            // 
+            this.pictureBox6.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design__3__removebg_preview;
+            this.pictureBox6.Location = new System.Drawing.Point(-13, 0);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(107, 111);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox6.TabIndex = 22;
+            this.pictureBox6.TabStop = false;
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design__2__removebg_preview;
+            this.pictureBox5.Location = new System.Drawing.Point(-12, 3);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(93, 93);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox5.TabIndex = 21;
+            this.pictureBox5.TabStop = false;
+            this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
+            // 
+            // Sales
+            // 
+            this.Sales.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design_removebg_preview__1_;
+            this.Sales.Location = new System.Drawing.Point(20, 18);
+            this.Sales.Name = "Sales";
+            this.Sales.Size = new System.Drawing.Size(61, 62);
+            this.Sales.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Sales.TabIndex = 20;
+            this.Sales.TabStop = false;
+            this.Sales.Click += new System.EventHandler(this.Sales_Click);
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = global::Vegetable_Ordering_System.Properties.Resources.cart;
+            this.pictureBox3.Location = new System.Drawing.Point(20, 34);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(43, 46);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox3.TabIndex = 18;
+            this.pictureBox3.TabStop = false;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.label3.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label3.Location = new System.Drawing.Point(1224, 28);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(64, 23);
+            this.label3.TabIndex = 44;
+            this.label3.Text = "Logout";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
+            // 
+            // chartMonthlySales
+            // 
+            chartArea3.Name = "ChartArea1";
+            this.chartMonthlySales.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chartMonthlySales.Legends.Add(legend3);
+            this.chartMonthlySales.Location = new System.Drawing.Point(784, 682);
+            this.chartMonthlySales.Name = "chartMonthlySales";
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chartMonthlySales.Series.Add(series3);
+            this.chartMonthlySales.Size = new System.Drawing.Size(670, 231);
+            this.chartMonthlySales.TabIndex = 47;
+            this.chartMonthlySales.Text = "chartMonthlySales";
             // 
             // MainMenuForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1382, 910);
-            this.Controls.Add(this.btnRefresh);
+            this.ClientSize = new System.Drawing.Size(1500, 910);
+            this.Controls.Add(this.chartMonthlySales);
+            this.Controls.Add(this.chartTopVegetables);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panelStocks);
@@ -630,18 +678,20 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartDailyOrders)).EndInit();
             this.panelStocks.ResumeLayout(false);
             this.panelStocks.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.panelTopSelling.ResumeLayout(false);
             this.panelTopSelling.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.panelSales.ResumeLayout(false);
             this.panelSales.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             this.panelOrderToday.ResumeLayout(false);
             this.panelOrderToday.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartTopVegetables)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Sales)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartMonthlySales)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -663,7 +713,7 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblOrdersToday;
-        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox Sales;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label lblTotalSales;
         private System.Windows.Forms.PictureBox pictureBox5;
@@ -687,7 +737,9 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartDailyOrders;
-        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartTopVegetables;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartMonthlySales;
     }
 }
 
