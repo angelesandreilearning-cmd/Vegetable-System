@@ -296,6 +296,7 @@
             // 
             // dgvInventory
             // 
+            this.dgvInventory.AllowUserToAddRows = false;
             this.dgvInventory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvInventory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,

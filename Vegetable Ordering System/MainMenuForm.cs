@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using System.Globalization;
+
 namespace Vegetable_Ordering_System
 {
     public partial class MainMenuForm : Form
@@ -60,7 +60,7 @@ namespace Vegetable_Ordering_System
             InitializeChart();
             LoadDailyOrdersChart();
             LoadTopVegetablesChart();
-            LoadMonthlySalesChart();
+        
         }
         private string GetSeasonalMessage()
         {
@@ -141,68 +141,14 @@ namespace Vegetable_Ordering_System
 
             return monthlyData;
         }
-        private void LoadMonthlySalesChart()
-        {
-            try
-            {
-                var monthlyData = GetMonthlySalesData();
-
-                // Reset chart
-                chartMonthlySales.Series.Clear();
-                chartMonthlySales.Titles.Clear();
-                chartMonthlySales.ChartAreas.Clear();
-                chartMonthlySales.Legends.Clear();
-
-                // Basic chart area
-                ChartArea area = new ChartArea();
-                area.AxisX.MajorGrid.Enabled = false;
-                area.AxisY.MajorGrid.Enabled = false;
-                area.AxisX.LabelStyle.Angle = -45;
-                area.AxisX.Interval = 1;
-                // Format Y-axis as currency
-                area.AxisY.LabelStyle.Format = "₱{0:N0}";
-                chartMonthlySales.ChartAreas.Add(area);
-
-                Title monthlyTitle = new Title("Monthly Sales");
-                monthlyTitle.Font = new Font("Arial", 11, FontStyle.Bold);
-                chartMonthlySales.Titles.Add(monthlyTitle);
-
-                // Basic series
-                Series series = new Series();
-                series.ChartType = SeriesChartType.Column;
-                series.Color = Color.FromArgb(0, 150, 0);
-                series.IsValueShownAsLabel = true;
-                series.LabelForeColor = Color.FromArgb(0, 100, 0);
-                series.Font = new Font("Arial", 8, FontStyle.Bold);
-                // Format the series labels as currency
-                series.LabelFormat = "₱{0:N0}";
-
-                // Add data
-                foreach (var data in monthlyData)
-                {
-                    series.Points.AddXY(data.MonthName, data.TotalSales);
-                }
-
-                chartMonthlySales.Series.Add(series);
-
-                // Customize appearance
-                chartMonthlySales.ChartAreas[0].AxisX.Title = "Month";
-                chartMonthlySales.ChartAreas[0].AxisY.Title = "Total Sales (₱)";
-                chartMonthlySales.ChartAreas[0].AxisX.TitleFont = new Font("Arial", 9, FontStyle.Bold);
-                chartMonthlySales.ChartAreas[0].AxisY.TitleFont = new Font("Arial", 9, FontStyle.Bold);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Monthly sales chart load error: " + ex.Message);
-            }
-        }
+    
         private void LoadDashboardData()
         {
             try
             {
                 var dashboardData = GetDashboardData();
 
-                // Update dashboard labels with real data
+              
                 lblOrdersToday.Text = dashboardData.OrdersToday.ToString();
                 lblTotalSales.Text = $"₱{dashboardData.TotalSalesToday:N2}";
                 lblTopSelling.Text = dashboardData.TopSellingVegetable;
@@ -283,15 +229,39 @@ namespace Vegetable_Ordering_System
         {
             try
             {
+                // Comprehensive null and disposed checking - ADD THIS
+                if (chartTopVegetables == null || chartTopVegetables.IsDisposed)
+                {
+                    System.Diagnostics.Debug.WriteLine("Chart control is not available or disposed");
+                    return;
+                }
+
+                // Ensure we're on the UI thread - ADD THIS
+                if (chartTopVegetables.InvokeRequired)
+                {
+                    chartTopVegetables.Invoke(new Action(LoadTopVegetablesChart));
+                    return;
+                }
+
                 var topProducts = GetTopSellingProducts(3);
 
-                // Reset chart
+                // Check if we have data - ADD THIS
+                if (topProducts == null || !topProducts.Any())
+                {
+                    // Show "No Data" message on chart
+                    chartTopVegetables.Series.Clear();
+                    chartTopVegetables.Titles.Clear();
+                    chartTopVegetables.Titles.Add("No Data Available");
+                    return;
+                }
+
+                // Reset chart (your existing code)
                 chartTopVegetables.Series.Clear();
                 chartTopVegetables.Titles.Clear();
                 chartTopVegetables.ChartAreas.Clear();
                 chartTopVegetables.Legends.Clear();
 
-                // Basic chart area
+                // Basic chart area (your existing code)
                 ChartArea area = new ChartArea();
                 area.Area3DStyle.Enable3D = true;
                 area.Area3DStyle.Inclination = 30;
@@ -301,7 +271,7 @@ namespace Vegetable_Ordering_System
                 title.Font = new Font("Arial", 11, FontStyle.Bold);
                 chartTopVegetables.Titles.Add(title);
 
-                // Basic series
+                // Basic series (your existing code)
                 Series series = new Series();
                 series.ChartType = SeriesChartType.Pie;
                 series.IsValueShownAsLabel = true;
@@ -309,31 +279,54 @@ namespace Vegetable_Ordering_System
                 series.Font = new Font("Arial", 9, FontStyle.Bold);
                 series.LabelForeColor = Color.White;
 
-                // Basic colors
+                // Basic colors (your existing code)
                 Color[] basicColors = { Color.SteelBlue, Color.SeaGreen, Color.Orange, Color.Purple, Color.Tomato };
 
-                // Add data
+                // Add data with validation - ENHANCED THIS
                 foreach (var product in topProducts)
                 {
-                    DataPoint point = new DataPoint();
-                    point.SetValueXY(product.ProductName, product.TotalQuantity);
-                    point.Color = basicColors[series.Points.Count % basicColors.Length];
-                    point.LegendText = $"{product.ProductName} ({product.TotalQuantity}kg)";
-                    series.Points.Add(point);
+                    if (product != null && !string.IsNullOrEmpty(product.ProductName))
+                    {
+                        DataPoint point = new DataPoint();
+                        point.SetValueXY(product.ProductName, product.TotalQuantity);
+                        point.Color = basicColors[series.Points.Count % basicColors.Length];
+                        point.LegendText = $"{product.ProductName} ({product.TotalQuantity}kg)";
+                        series.Points.Add(point);
+                    }
                 }
 
-                chartTopVegetables.Series.Add(series);
+                // Only add series if we have points - ADD THIS
+                if (series.Points.Count > 0)
+                {
+                    chartTopVegetables.Series.Add(series);
 
-                // Basic legend on right
-                Legend leg = new Legend();
-                leg.Docking = Docking.Right;
-                chartTopVegetables.Legends.Add(leg);
+                    // Basic legend on right (your existing code)
+                    Legend leg = new Legend();
+                    leg.Docking = Docking.Right;
+                    chartTopVegetables.Legends.Add(leg);
+                }
+                else
+                {
+                    // Show no data message if no valid points
+                    chartTopVegetables.Titles.Clear();
+                    chartTopVegetables.Titles.Add("No Valid Data");
+                }
 
             }
             catch (Exception ex)
             {
-                // Silent error handling
-                System.Diagnostics.Debug.WriteLine("Chart load error: " + ex.Message);
+                // Enhanced error handling
+                System.Diagnostics.Debug.WriteLine("Top vegetables chart load error: " + ex.Message);
+                // Show error on chart if possible - ADD THIS
+                if (chartTopVegetables != null && !chartTopVegetables.IsDisposed)
+                {
+                    try
+                    {
+                        chartTopVegetables.Titles.Clear();
+                        chartTopVegetables.Titles.Add("Chart Unavailable");
+                    }
+                    catch { /* Ignore secondary errors */ }
+                }
             }
         }
         private void InitializeChart()
@@ -533,7 +526,7 @@ namespace Vegetable_Ordering_System
             LoadDashboardData();
             LoadDailyOrdersChart();
             LoadTopVegetablesChart();
-            LoadMonthlySalesChart();
+            
         }
 
         // Add this to clean up resources
