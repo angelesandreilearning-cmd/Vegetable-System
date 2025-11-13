@@ -32,10 +32,6 @@
             this.panelNav = new System.Windows.Forms.Panel();
             this.panelSettings = new System.Windows.Forms.Panel();
             this.btnAbout = new System.Windows.Forms.Button();
-            this.btnBackup = new System.Windows.Forms.Button();
-            this.btnSecurity = new System.Windows.Forms.Button();
-            this.btnSystem = new System.Windows.Forms.Button();
-            this.btnUsers = new System.Windows.Forms.Button();
             this.btnGeneral = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
             this.btnSuppliers = new System.Windows.Forms.Button();
@@ -83,12 +79,8 @@
             // 
             // panelSettings
             // 
-            this.panelSettings.BackColor = System.Drawing.Color.ForestGreen;
+            this.panelSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
             this.panelSettings.Controls.Add(this.btnAbout);
-            this.panelSettings.Controls.Add(this.btnBackup);
-            this.panelSettings.Controls.Add(this.btnSecurity);
-            this.panelSettings.Controls.Add(this.btnSystem);
-            this.panelSettings.Controls.Add(this.btnUsers);
             this.panelSettings.Controls.Add(this.btnGeneral);
             this.panelSettings.Location = new System.Drawing.Point(0, 406);
             this.panelSettings.Name = "panelSettings";
@@ -104,77 +96,13 @@
             this.btnAbout.FlatAppearance.BorderSize = 0;
             this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAbout.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnAbout.Location = new System.Drawing.Point(0, 115);
+            this.btnAbout.Location = new System.Drawing.Point(0, 23);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(200, 23);
             this.btnAbout.TabIndex = 6;
             this.btnAbout.Text = "About";
             this.btnAbout.UseVisualStyleBackColor = false;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
-            // 
-            // btnBackup
-            // 
-            this.btnBackup.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnBackup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnBackup.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnBackup.FlatAppearance.BorderSize = 0;
-            this.btnBackup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBackup.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnBackup.Location = new System.Drawing.Point(0, 92);
-            this.btnBackup.Name = "btnBackup";
-            this.btnBackup.Size = new System.Drawing.Size(200, 23);
-            this.btnBackup.TabIndex = 5;
-            this.btnBackup.Text = "Backup & Logs";
-            this.btnBackup.UseVisualStyleBackColor = false;
-            this.btnBackup.Click += new System.EventHandler(this.btnBackup_Click);
-            // 
-            // btnSecurity
-            // 
-            this.btnSecurity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnSecurity.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnSecurity.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnSecurity.FlatAppearance.BorderSize = 0;
-            this.btnSecurity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSecurity.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnSecurity.Location = new System.Drawing.Point(0, 69);
-            this.btnSecurity.Name = "btnSecurity";
-            this.btnSecurity.Size = new System.Drawing.Size(200, 23);
-            this.btnSecurity.TabIndex = 3;
-            this.btnSecurity.Text = "Security";
-            this.btnSecurity.UseVisualStyleBackColor = false;
-            this.btnSecurity.Click += new System.EventHandler(this.btnSecurity_Click);
-            // 
-            // btnSystem
-            // 
-            this.btnSystem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnSystem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnSystem.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnSystem.FlatAppearance.BorderSize = 0;
-            this.btnSystem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSystem.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnSystem.Location = new System.Drawing.Point(0, 46);
-            this.btnSystem.Name = "btnSystem";
-            this.btnSystem.Size = new System.Drawing.Size(200, 23);
-            this.btnSystem.TabIndex = 2;
-            this.btnSystem.Text = "System Configuration";
-            this.btnSystem.UseVisualStyleBackColor = false;
-            this.btnSystem.Click += new System.EventHandler(this.btnSystem_Click);
-            // 
-            // btnUsers
-            // 
-            this.btnUsers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnUsers.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnUsers.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnUsers.FlatAppearance.BorderSize = 0;
-            this.btnUsers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUsers.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnUsers.Location = new System.Drawing.Point(0, 23);
-            this.btnUsers.Name = "btnUsers";
-            this.btnUsers.Size = new System.Drawing.Size(200, 23);
-            this.btnUsers.TabIndex = 1;
-            this.btnUsers.Text = "User Management";
-            this.btnUsers.UseVisualStyleBackColor = false;
-            this.btnUsers.Click += new System.EventHandler(this.btnUsers_Click);
             // 
             // btnGeneral
             // 
@@ -188,7 +116,7 @@
             this.btnGeneral.Name = "btnGeneral";
             this.btnGeneral.Size = new System.Drawing.Size(200, 23);
             this.btnGeneral.TabIndex = 0;
-            this.btnGeneral.Text = "General Settings";
+            this.btnGeneral.Text = "Register";
             this.btnGeneral.UseVisualStyleBackColor = false;
             this.btnGeneral.Click += new System.EventHandler(this.btnGeneral_Click);
             // 
@@ -293,6 +221,7 @@
             this.txtSearch.Text = "Search";
             this.txtSearch.Click += new System.EventHandler(this.txtSearch_Click);
             this.txtSearch.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.txtSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSearch_KeyPress);
             // 
             // dgvInventory
             // 
@@ -436,7 +365,7 @@
             this.lblCurrentUser.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCurrentUser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(72)))), ((int)(((byte)(58)))));
             this.lblCurrentUser.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblCurrentUser.Location = new System.Drawing.Point(952, 28);
+            this.lblCurrentUser.Location = new System.Drawing.Point(898, 28);
             this.lblCurrentUser.Name = "lblCurrentUser";
             this.lblCurrentUser.Size = new System.Drawing.Size(162, 23);
             this.lblCurrentUser.TabIndex = 38;
@@ -499,10 +428,6 @@
         private System.Windows.Forms.Button btnOrder;
         private System.Windows.Forms.Panel panelSettings;
         private System.Windows.Forms.Button btnAbout;
-        private System.Windows.Forms.Button btnBackup;
-        private System.Windows.Forms.Button btnSecurity;
-        private System.Windows.Forms.Button btnSystem;
-        private System.Windows.Forms.Button btnUsers;
         private System.Windows.Forms.Button btnGeneral;
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Button btn_addstk;

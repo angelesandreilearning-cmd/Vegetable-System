@@ -72,8 +72,8 @@ namespace Vegetable_Ordering_System
         private void btnGeneral_Click(object sender, EventArgs e)
         {
 
-            MessageBox.Show("Open General Settings");
-            HideSettingsMenu();
+            Registration registrationForm = new Registration();
+            registrationForm.ShowDialog();
         }
 
         private void btnUsers_Click(object sender, EventArgs e)
@@ -189,6 +189,11 @@ namespace Vegetable_Ordering_System
         }   
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
+            if (txtSearch.Text == "Search")
+            {
+                txtSearch.Text = "";
+                txtSearch.ForeColor = Color.Black;
+            }
             string searchText = txtSearch.Text.Trim();
 
             if (string.IsNullOrEmpty(searchText))
@@ -315,6 +320,17 @@ namespace Vegetable_Ordering_System
         private void lblDate_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
+        {
+         
+        }
+
+        private void txtSearch_Click_1(object sender, EventArgs e)
+        {
+            txtSearch.ForeColor = Color.Black;
+            txtSearch.Clear();
         }
     }
 }

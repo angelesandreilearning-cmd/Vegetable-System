@@ -39,10 +39,6 @@
             this.panelNav = new System.Windows.Forms.Panel();
             this.panelSettings = new System.Windows.Forms.Panel();
             this.btnAbout = new System.Windows.Forms.Button();
-            this.btnBackup = new System.Windows.Forms.Button();
-            this.btnSecurity = new System.Windows.Forms.Button();
-            this.btnSystem = new System.Windows.Forms.Button();
-            this.btnUsers = new System.Windows.Forms.Button();
             this.btnGeneral = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
             this.btnSuppliers = new System.Windows.Forms.Button();
@@ -56,18 +52,14 @@
             this.panelStocks = new System.Windows.Forms.Panel();
             this.lblLowStock = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.panelTopSelling = new System.Windows.Forms.Panel();
             this.lblTopSelling = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.panelSales = new System.Windows.Forms.Panel();
             this.lblTotalSales = new System.Windows.Forms.Label();
-            this.Sales = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panelOrderToday = new System.Windows.Forms.Panel();
             this.lblOrdersToday = new System.Windows.Forms.Label();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblDate = new System.Windows.Forms.Label();
@@ -78,20 +70,24 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.chartTopVegetables = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.Sales = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.panelNav.SuspendLayout();
             this.panelSettings.SuspendLayout();
             this.panelDailyOrders.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartDailyOrders)).BeginInit();
             this.panelStocks.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.panelTopSelling.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.panelSales.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Sales)).BeginInit();
             this.panelOrderToday.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartTopVegetables)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Sales)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
             // panelNav
@@ -110,12 +106,8 @@
             // 
             // panelSettings
             // 
-            this.panelSettings.BackColor = System.Drawing.Color.ForestGreen;
+            this.panelSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
             this.panelSettings.Controls.Add(this.btnAbout);
-            this.panelSettings.Controls.Add(this.btnBackup);
-            this.panelSettings.Controls.Add(this.btnSecurity);
-            this.panelSettings.Controls.Add(this.btnSystem);
-            this.panelSettings.Controls.Add(this.btnUsers);
             this.panelSettings.Controls.Add(this.btnGeneral);
             this.panelSettings.Location = new System.Drawing.Point(3, 406);
             this.panelSettings.Name = "panelSettings";
@@ -131,73 +123,12 @@
             this.btnAbout.FlatAppearance.BorderSize = 0;
             this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAbout.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnAbout.Location = new System.Drawing.Point(0, 115);
+            this.btnAbout.Location = new System.Drawing.Point(0, 23);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(200, 23);
             this.btnAbout.TabIndex = 6;
             this.btnAbout.Text = "About";
             this.btnAbout.UseVisualStyleBackColor = false;
-            // 
-            // btnBackup
-            // 
-            this.btnBackup.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnBackup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnBackup.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnBackup.FlatAppearance.BorderSize = 0;
-            this.btnBackup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBackup.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnBackup.Location = new System.Drawing.Point(0, 92);
-            this.btnBackup.Name = "btnBackup";
-            this.btnBackup.Size = new System.Drawing.Size(200, 23);
-            this.btnBackup.TabIndex = 5;
-            this.btnBackup.Text = "Backup & Logs";
-            this.btnBackup.UseVisualStyleBackColor = false;
-            // 
-            // btnSecurity
-            // 
-            this.btnSecurity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnSecurity.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnSecurity.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnSecurity.FlatAppearance.BorderSize = 0;
-            this.btnSecurity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSecurity.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnSecurity.Location = new System.Drawing.Point(0, 69);
-            this.btnSecurity.Name = "btnSecurity";
-            this.btnSecurity.Size = new System.Drawing.Size(200, 23);
-            this.btnSecurity.TabIndex = 3;
-            this.btnSecurity.Text = "Security";
-            this.btnSecurity.UseVisualStyleBackColor = false;
-            // 
-            // btnSystem
-            // 
-            this.btnSystem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnSystem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnSystem.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnSystem.FlatAppearance.BorderSize = 0;
-            this.btnSystem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSystem.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnSystem.Location = new System.Drawing.Point(0, 46);
-            this.btnSystem.Name = "btnSystem";
-            this.btnSystem.Size = new System.Drawing.Size(200, 23);
-            this.btnSystem.TabIndex = 2;
-            this.btnSystem.Text = "System Configuration";
-            this.btnSystem.UseVisualStyleBackColor = false;
-            // 
-            // btnUsers
-            // 
-            this.btnUsers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnUsers.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnUsers.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnUsers.FlatAppearance.BorderSize = 0;
-            this.btnUsers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUsers.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnUsers.Location = new System.Drawing.Point(0, 23);
-            this.btnUsers.Name = "btnUsers";
-            this.btnUsers.Size = new System.Drawing.Size(200, 23);
-            this.btnUsers.TabIndex = 1;
-            this.btnUsers.Text = "User Management";
-            this.btnUsers.UseVisualStyleBackColor = false;
-            this.btnUsers.Click += new System.EventHandler(this.btnUsers_Click);
             // 
             // btnGeneral
             // 
@@ -211,7 +142,7 @@
             this.btnGeneral.Name = "btnGeneral";
             this.btnGeneral.Size = new System.Drawing.Size(200, 23);
             this.btnGeneral.TabIndex = 0;
-            this.btnGeneral.Text = "General Settings";
+            this.btnGeneral.Text = "Register";
             this.btnGeneral.UseVisualStyleBackColor = false;
             this.btnGeneral.Click += new System.EventHandler(this.btnGeneral_Click);
             // 
@@ -377,16 +308,6 @@
             this.label14.Text = "Low Stock\r\nItems\r\n\r\n\r\n\r\n";
             this.label14.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // pictureBox6
-            // 
-            this.pictureBox6.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design__3__removebg_preview;
-            this.pictureBox6.Location = new System.Drawing.Point(-13, 0);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(107, 111);
-            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox6.TabIndex = 22;
-            this.pictureBox6.TabStop = false;
-            // 
             // panelTopSelling
             // 
             this.panelTopSelling.BackColor = System.Drawing.Color.WhiteSmoke;
@@ -403,7 +324,7 @@
             this.lblTopSelling.AutoSize = true;
             this.lblTopSelling.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTopSelling.ForeColor = System.Drawing.Color.DarkGreen;
-            this.lblTopSelling.Location = new System.Drawing.Point(64, 85);
+            this.lblTopSelling.Location = new System.Drawing.Point(13, 87);
             this.lblTopSelling.Name = "lblTopSelling";
             this.lblTopSelling.Size = new System.Drawing.Size(91, 31);
             this.lblTopSelling.TabIndex = 21;
@@ -422,17 +343,6 @@
             this.label12.TabIndex = 21;
             this.label12.Text = "Top Selling\r\nVegetable\r\n\r\n";
             this.label12.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // pictureBox5
-            // 
-            this.pictureBox5.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design__2__removebg_preview;
-            this.pictureBox5.Location = new System.Drawing.Point(-12, 3);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(93, 93);
-            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox5.TabIndex = 21;
-            this.pictureBox5.TabStop = false;
-            this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
             // 
             // panelSales
             // 
@@ -456,17 +366,6 @@
             this.lblTotalSales.TabIndex = 20;
             this.lblTotalSales.Text = "₱56,478";
             this.lblTotalSales.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // Sales
-            // 
-            this.Sales.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design_removebg_preview__1_;
-            this.Sales.Location = new System.Drawing.Point(20, 18);
-            this.Sales.Name = "Sales";
-            this.Sales.Size = new System.Drawing.Size(61, 62);
-            this.Sales.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.Sales.TabIndex = 20;
-            this.Sales.TabStop = false;
-            this.Sales.Click += new System.EventHandler(this.Sales_Click);
             // 
             // label4
             // 
@@ -502,16 +401,6 @@
             this.lblOrdersToday.TabIndex = 19;
             this.lblOrdersToday.Text = "30";
             this.lblOrdersToday.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Image = global::Vegetable_Ordering_System.Properties.Resources.cart;
-            this.pictureBox3.Location = new System.Drawing.Point(20, 34);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(43, 46);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox3.TabIndex = 18;
-            this.pictureBox3.TabStop = false;
             // 
             // label2
             // 
@@ -565,7 +454,7 @@
             this.lblCurrentUser.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCurrentUser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
             this.lblCurrentUser.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblCurrentUser.Location = new System.Drawing.Point(952, 28);
+            this.lblCurrentUser.Location = new System.Drawing.Point(898, 28);
             this.lblCurrentUser.Name = "lblCurrentUser";
             this.lblCurrentUser.Size = new System.Drawing.Size(162, 23);
             this.lblCurrentUser.TabIndex = 41;
@@ -624,6 +513,48 @@
             this.chartTopVegetables.Text = "chart1";
             this.chartTopVegetables.Click += new System.EventHandler(this.chartTopVegetables_Click);
             // 
+            // pictureBox6
+            // 
+            this.pictureBox6.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design__3__removebg_preview;
+            this.pictureBox6.Location = new System.Drawing.Point(-13, 0);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(107, 111);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox6.TabIndex = 22;
+            this.pictureBox6.TabStop = false;
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design__2__removebg_preview;
+            this.pictureBox5.Location = new System.Drawing.Point(-12, 3);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(93, 93);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox5.TabIndex = 21;
+            this.pictureBox5.TabStop = false;
+            this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
+            // 
+            // Sales
+            // 
+            this.Sales.Image = global::Vegetable_Ordering_System.Properties.Resources.Untitled_design_removebg_preview__1_;
+            this.Sales.Location = new System.Drawing.Point(20, 18);
+            this.Sales.Name = "Sales";
+            this.Sales.Size = new System.Drawing.Size(61, 62);
+            this.Sales.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Sales.TabIndex = 20;
+            this.Sales.TabStop = false;
+            this.Sales.Click += new System.EventHandler(this.Sales_Click);
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = global::Vegetable_Ordering_System.Properties.Resources.cart;
+            this.pictureBox3.Location = new System.Drawing.Point(20, 34);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(43, 46);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox3.TabIndex = 18;
+            this.pictureBox3.TabStop = false;
+            // 
             // MainMenuForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -656,19 +587,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartDailyOrders)).EndInit();
             this.panelStocks.ResumeLayout(false);
             this.panelStocks.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.panelTopSelling.ResumeLayout(false);
             this.panelTopSelling.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.panelSales.ResumeLayout(false);
             this.panelSales.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Sales)).EndInit();
             this.panelOrderToday.ResumeLayout(false);
             this.panelOrderToday.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartTopVegetables)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Sales)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -702,10 +633,6 @@
         private System.Windows.Forms.Panel panelSettings;
         private System.Windows.Forms.Button btnGeneral;
         private System.Windows.Forms.Button btnAbout;
-        private System.Windows.Forms.Button btnBackup;
-        private System.Windows.Forms.Button btnSecurity;
-        private System.Windows.Forms.Button btnSystem;
-        private System.Windows.Forms.Button btnUsers;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblDate;
         private System.Windows.Forms.Label lblTime;

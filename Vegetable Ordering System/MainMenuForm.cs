@@ -594,10 +594,10 @@ namespace Vegetable_Ordering_System
 
         private void btnSuppliers_Click(object sender, EventArgs e)
         {
-            this.Hide();
+           
             SupplierForm supplierForm = new SupplierForm(currentUser, currentRole);
-            supplierForm.ShowDialog();
-            this.Show();
+            supplierForm.Show();
+            this.Close();
         }
 
         private void btnOrder_Click(object sender, EventArgs e)
@@ -639,23 +639,23 @@ namespace Vegetable_Ordering_System
             panelSettings.Visible = false;
         }
 
-        // --- Added missing handlers wired by the designer ---
-        private void btnGeneral_Click(object sender, EventArgs e)
+         private void btnGeneral_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Open General Settings", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            HideSettingsMenu();
+            Registration registrationForm = new Registration();
+            registrationForm.ShowDialog();
+
+
+           
         }
 
         private void btnUsers_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Open User Management", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            HideSettingsMenu();
+          
         }
 
         private void btnSystem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Open System Configuration", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            HideSettingsMenu();
+           
         }
 
         private void btnSecurity_Click(object sender, EventArgs e)

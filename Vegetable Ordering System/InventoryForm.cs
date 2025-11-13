@@ -72,8 +72,8 @@ namespace Vegetable_Ordering_System
         }
         private void btnGeneral_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Open General Settings");
-            HideSettingsMenu();
+            Registration registrationForm = new Registration();
+            registrationForm.ShowDialog();
         }
 
         private void btnUsers_Click(object sender, EventArgs e)
@@ -119,7 +119,11 @@ namespace Vegetable_Ordering_System
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             string searchText = txtSearch.Text.Trim();
-
+            if (txtSearch.Text == "Search")
+            {
+                txtSearch.Text = "";
+                txtSearch.ForeColor = Color.Black;
+            }
             if (string.IsNullOrEmpty(searchText))
             {
                 LoadProducts();
@@ -230,6 +234,7 @@ namespace Vegetable_Ordering_System
 
         private void txtSearch_Click(object sender, EventArgs e)
         {
+            txtSearch.ForeColor = Color.Black;
             txtSearch.Clear();
         }
 
@@ -323,6 +328,11 @@ namespace Vegetable_Ordering_System
                 loginForm.Show();
                 this.Close();
             }
+        }
+
+        private void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
         }
     }
 

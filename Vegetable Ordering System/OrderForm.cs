@@ -12,6 +12,10 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Data.SqlClient;
 using System.IO;
+using ZXing;    
+using ZXing.Common;
+
+using System.Drawing.Printing;
 
 namespace Vegetable_Ordering_System
 {
@@ -43,8 +47,129 @@ namespace Vegetable_Ordering_System
 
             errorProvider1.BlinkStyle = ErrorBlinkStyle.AlwaysBlink;
             errorProvider1.BlinkRate = 500;
-        }
 
+            InitializePrintDocument();
+
+        }
+        private System.Drawing.Printing.PrintDocument printDocument;
+        private Order currentOrder;
+
+        private void InitializePrintDocument()
+        {
+            printDocument = new System.Drawing.Printing.PrintDocument();
+            printDocument.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(PrintDocument_PrintPage);
+        }
+        private void PrintDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            if (currentOrder == null) return;
+
+            Graphics graphics = e.Graphics;
+            Font titleFont = new Font("Arial", 16, FontStyle.Bold);
+            Font headerFont = new Font("Arial", 12, FontStyle.Bold);
+            Font normalFont = new Font("Arial", 10);
+            Font smallFont = new Font("Arial", 8);
+
+            float yPos = 20;
+            float leftMargin = 10;
+            float rightMargin = e.PageBounds.Width - 10;
+
+            // Company Header
+            graphics.DrawString("VEGETABLE ORDERING SYSTEM", titleFont, Brushes.Black, leftMargin, yPos);
+            yPos += 30;
+
+            // Order Information
+            graphics.DrawString($"Order ID: {currentOrder.OrderId}", headerFont, Brushes.Black, leftMargin, yPos);
+            yPos += 20;
+            graphics.DrawString($"Customer: {currentOrder.CustomerName}", normalFont, Brushes.Black, leftMargin, yPos);
+            yPos += 15;
+            graphics.DrawString($"Date: {currentOrder.DateDisplay}", normalFont, Brushes.Black, leftMargin, yPos);
+            yPos += 15;
+            graphics.DrawString($"Time: {currentOrder.TimeDisplay}", normalFont, Brushes.Black, leftMargin, yPos);
+            yPos += 15;
+
+            // Payment Information
+            graphics.DrawString($"Payment: {currentOrder.PaymentType}", normalFont, Brushes.Black, leftMargin, yPos);
+            yPos += 15;
+
+            // Add GCash reference number if payment is GCash
+            if (currentOrder.PaymentType == "GCash")
+            {
+                string gcashRef = GenerateGCashReference();
+                graphics.DrawString($"GCash Ref: {gcashRef}", normalFont, Brushes.Black, leftMargin, yPos);
+                yPos += 15;
+            }
+
+            yPos += 5;
+
+            // Draw line separator - MOVED OUTSIDE GCASH CONDITION
+            graphics.DrawLine(new Pen(Color.Black, 1), leftMargin, yPos, rightMargin, yPos);
+            yPos += 10;
+
+            // Column Headers - MOVED OUTSIDE GCASH CONDITION
+            graphics.DrawString("Product", headerFont, Brushes.Black, leftMargin, yPos);
+            graphics.DrawString("Qty", headerFont, Brushes.Black, leftMargin + 150, yPos);
+            graphics.DrawString("Price", headerFont, Brushes.Black, leftMargin + 200, yPos);
+            graphics.DrawString("Total", headerFont, Brushes.Black, rightMargin - 80, yPos);
+            yPos += 20;
+
+            // Draw line under headers - MOVED OUTSIDE GCASH CONDITION
+            graphics.DrawLine(new Pen(Color.Black, 1), leftMargin, yPos, rightMargin, yPos);
+            yPos += 5;
+
+            // Order Items - MOVED OUTSIDE GCASH CONDITION
+            foreach (var item in currentOrder.OrderItems)
+            {
+                if (yPos > e.PageBounds.Height - 100)
+                {
+                    e.HasMorePages = true;
+                    return;
+                }
+
+                graphics.DrawString(item.ProductName, normalFont, Brushes.Black, leftMargin, yPos);
+                graphics.DrawString($"{item.Quantity} kg", normalFont, Brushes.Black, leftMargin + 150, yPos);
+                graphics.DrawString($"₱{item.UnitPrice:N2}", normalFont, Brushes.Black, leftMargin + 200, yPos);
+                graphics.DrawString($"₱{item.TotalPrice:N2}", normalFont, Brushes.Black, rightMargin - 80, yPos);
+                yPos += 15;
+            }
+
+            yPos += 10;
+
+            // Draw line before total - MOVED OUTSIDE GCASH CONDITION
+            graphics.DrawLine(new Pen(Color.Black, 2), leftMargin, yPos, rightMargin, yPos);
+            yPos += 15;
+
+            // Total Amount - MOVED OUTSIDE GCASH CONDITION
+            graphics.DrawString($"TOTAL AMOUNT: ₱{currentOrder.TotalAmount:N2}",
+                new Font("Arial", 12, FontStyle.Bold), Brushes.Black, rightMargin - 150, yPos);
+            yPos += 30;
+
+            // Footer - MOVED OUTSIDE GCASH CONDITION
+            graphics.DrawString("Thank you for your order!", normalFont, Brushes.Black, leftMargin, yPos);
+            yPos += 15;
+            graphics.DrawString($"Processed by: {currentOrder.CreatedBy}", smallFont, Brushes.Black, leftMargin, yPos);
+        }
+        private string GenerateGCashReference()
+        {
+            Random random = new Random();
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string randomNum = random.Next(1000, 9999).ToString();
+            return $"GC{timestamp}{randomNum}";
+        }
+        private void SaveGCashReference(string orderId, string gcashReference)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "UPDATE tbl_Sales SET GCashReference = @GCashReference WHERE OrderID = @OrderID";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@GCashReference", gcashReference);
+                    cmd.Parameters.AddWithValue("@OrderID", orderId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
         public class OrderItem
         {
             public string ProductName { get; set; }
@@ -189,9 +314,11 @@ namespace Vegetable_Ordering_System
         // Method to get selected payment type
         private string GetSelectedPaymentType()
         {
-            // If you have payment type controls, implement here
-            // For now, returning "Cash" as default
-            return "Cash";
+            if (cmbPaymentType != null && cmbPaymentType.SelectedItem != null)
+            {
+                return cmbPaymentType.SelectedItem.ToString();
+            }
+            return "Cash"; // Default fallback
         }
 
         // Method to get order items from DataGridView
@@ -813,17 +940,7 @@ namespace Vegetable_Ordering_System
                 }
             }
 
-            // Show your custom form
-            EditPriceForm editForm = new EditPriceForm();
-            editForm.ProductId = productId;
-            editForm.LoadProductData(productName, currentPrice); // Pass data to form
-
-            if (editForm.ShowDialog() == DialogResult.OK)
-            {
-                // Get the new price from the form and update database
-                decimal newPrice = editForm.NewPrice;
-                UpdateProductPrice(productId, newPrice, productName);
-            }
+        
         }
 
         private Image GetDefaultProductImage()
@@ -967,8 +1084,8 @@ namespace Vegetable_Ordering_System
 
         private void btnGeneral_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Open General Settings");
-            HideSettingsMenu();
+            Registration registrationForm = new Registration();
+            registrationForm.ShowDialog();
         }
 
         private void btnUsers_Click(object sender, EventArgs e)
@@ -1006,21 +1123,33 @@ namespace Vegetable_Ordering_System
             panelSettings.Visible = false;
             isSettingsMenuVisible = false;
         }
-
+        private void InitializePaymentComboBox()
+        {
+            cmbPaymentType.Items.Clear();
+            cmbPaymentType.Items.Add("Cash");
+            cmbPaymentType.Items.Add("GCash");
+            cmbPaymentType.SelectedIndex = 0; // Default to Cash
+        }
         private void OrderForm_Load(object sender, EventArgs e)
         {
             LoadProductsToFlowLayout();
             InitializeOrderItemsTable();
 
-            // Wire up the TextChanged event
+            if (cmbPaymentType.Items.Count == 0)
+            {
+                cmbPaymentType.Items.Add("Cash");
+                cmbPaymentType.Items.Add("GCash");
+                cmbPaymentType.SelectedIndex = 0;
+            }
             txtTotalPayment.TextChanged += txtTotalPayment_TextChanged;
 
             flowLayoutPanel2.FlowDirection = FlowDirection.LeftToRight;
-            RoundCorners(btnBarcode, 20);
+
             RoundCorners(btnPlaceOrder, 20);
             RoundPanel(panel3, 20);
             RoundPanel(flowLayoutPanel2, 20);
             timer1.Start();
+            txtBarcode.Focus();
         }
 
         private void RoundCorners(Button btn, int radius)
@@ -1145,7 +1274,7 @@ namespace Vegetable_Ordering_System
         {
             try
             {
-                // Validate customer name
+               
                 if (string.IsNullOrWhiteSpace(txtCustomer.Text))
                 {
                     MessageBox.Show("Please enter customer name.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1153,7 +1282,7 @@ namespace Vegetable_Ordering_System
                     return;
                 }
 
-                // Validate customer name contains only letters and spaces
+                
                 Regex regex = new Regex(@"^[a-zA-Z\s]+$");
                 if (!regex.IsMatch(txtCustomer.Text))
                 {
@@ -1171,6 +1300,7 @@ namespace Vegetable_Ordering_System
 
                 // Collect order data
                 Order order = CollectOrderData();
+                currentOrder = order; // Store for printing
 
                 // Save to database
                 bool success = SaveOrderToDatabase(order);
@@ -1182,8 +1312,18 @@ namespace Vegetable_Ordering_System
 
                     if (stockUpdated)
                     {
-                        MessageBox.Show($"Order placed successfully!\nOrder ID: {order.OrderId}", "Success",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Ask if user wants to print receipt
+                        DialogResult printResult = MessageBox.Show(
+                            $"Order placed successfully!\nOrder ID: {order.OrderId}\n\nDo you want to print the receipt?",
+                            "Success",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Information);
+
+                        if (printResult == DialogResult.Yes)
+                        {
+                            PrintReceipt(); 
+                        }
+
                         ResetOrderForm();
                     }
                     else
@@ -1200,6 +1340,56 @@ namespace Vegetable_Ordering_System
             }
         }
 
+        private void PrintReceipt()
+        {
+            try
+            {
+                if (currentOrder == null)
+                {
+                    MessageBox.Show("No order data available for printing.", "Print Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // SIMPLIFIED: Just show print dialog directly
+                PrintDialog printDialog = new PrintDialog();
+                printDialog.Document = printDocument;
+
+                // THIS IS THE KEY LINE - ShowDialog(this) makes it modal and centered
+                DialogResult result = printDialog.ShowDialog(this);
+
+                if (result == DialogResult.OK)
+                {
+                    printDocument.Print();
+                    MessageBox.Show("Receipt sent to printer!", "Print Successful",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Printing cancelled.", "Print Cancelled",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+       
+        private void ShowPrintPreview()
+        {
+            if (currentOrder == null)
+            {
+                MessageBox.Show("No order data available for preview.", "Preview Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            PrintPreviewDialog previewDialog = new PrintPreviewDialog();
+            previewDialog.Document = printDocument;
+            previewDialog.ShowDialog();
+        }
         private void btnBarcode_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Barcode scanner functionality would open here");
@@ -1235,7 +1425,277 @@ namespace Vegetable_Ordering_System
             LoadProductsToFlowLayout(searchTerm, 1);
         }
 
-    
+        private void txtBarcode_TextChanged(object sender, EventArgs e)
+        {
+
         }
-    
-}
+        private string ScanBarcodeFromImage(string imagePath)
+        {
+            try
+            {
+                var barcodeReader = new BarcodeReader();
+                barcodeReader.Options.TryHarder = true;
+
+                using (Bitmap bitmap = new Bitmap(imagePath))
+                {
+                    var result = barcodeReader.Decode(bitmap);
+                    return result?.Text;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Scan failed: {ex.Message}");
+            }
+        }
+        private void FindProductByBarcode(string barcode)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+                    string query = "SELECT ProductID, ProductName, Price, Stock FROM tbl_Products WHERE Barcode = @Barcode AND Stock > 0";
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@Barcode", barcode);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                int productId = Convert.ToInt32(reader["ProductID"]);
+                                string productName = reader["ProductName"].ToString();
+                                decimal price = Convert.ToDecimal(reader["Price"]);
+                                int stock = Convert.ToInt32(reader["Stock"]);
+
+                                // Ask for quantity using a custom dialog
+                                decimal quantity = ShowQuantityDialog(productName, stock);
+
+                                if (quantity > 0)
+                                {
+                                    if (quantity <= stock)
+                                    {
+                                        AddProductToOrder(productId, productName, price, quantity);
+                                        MessageBox.Show($"'{productName}' ({quantity} kg) added to order!\nTotal: ₱{(price * quantity):N2}",
+                                            "Product Added", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show($"Insufficient stock! Available: {stock} kg",
+                                            "Stock Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No product found with this barcode or product is out of stock.", "Not Found",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error finding product: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private decimal ShowQuantityDialog(string productName, int maxStock)
+        {
+            using (var quantityForm = new Form())
+            {
+                quantityForm.Text = "Enter Quantity";
+                quantityForm.Size = new Size(300, 180);
+                quantityForm.StartPosition = FormStartPosition.CenterScreen;
+                quantityForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                quantityForm.MaximizeBox = false;
+                quantityForm.MinimizeBox = false;
+
+                // Product info label
+                var lblInfo = new Label()
+                {
+                    Text = $"{productName}\nAvailable: {maxStock} kg",
+                    Location = new Point(20, 20),
+                    Size = new Size(250, 40),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold)
+                };
+
+                // Quantity label
+                var lblQuantity = new Label()
+                {
+                    Text = "Quantity (kg):",
+                    Location = new Point(20, 70),
+                    Size = new Size(80, 20)
+                };
+
+                // Numeric input for quantity
+                var numQuantity = new NumericUpDown()
+                {
+                    Location = new Point(110, 68),
+                    Size = new Size(100, 20),
+                    Minimum = 0.1m,
+                    Maximum = maxStock,
+                    DecimalPlaces = 2,
+                    Value = 1.0m
+                };
+
+                // OK button
+                var btnOK = new Button()
+                {
+                    Text = "OK",
+                    Location = new Point(70, 110),
+                    Size = new Size(75, 30),
+                    DialogResult = DialogResult.OK
+                };
+
+                // Cancel button
+                var btnCancel = new Button()
+                {
+                    Text = "Cancel",
+                    Location = new Point(155, 110),
+                    Size = new Size(75, 30),
+                    DialogResult = DialogResult.Cancel
+                };
+
+                // Add controls to form
+                quantityForm.Controls.AddRange(new Control[] { lblInfo, lblQuantity, numQuantity, btnOK, btnCancel });
+                quantityForm.AcceptButton = btnOK;
+                quantityForm.CancelButton = btnCancel;
+
+                // Focus on quantity input
+                numQuantity.Select(0, numQuantity.Text.Length);
+
+                // Show dialog and return result
+                if (quantityForm.ShowDialog() == DialogResult.OK)
+                {
+                    return numQuantity.Value;
+                }
+                else
+                {
+                    return 0; // User cancelled
+                }
+            }
+        }
+
+        private void TxtBarcode_TextChanged_1(object sender, EventArgs e)
+        {
+            string barcode = txtBarcode.Text.Trim();
+
+            if (!string.IsNullOrEmpty(barcode) && barcode.Length >= 10)
+            {
+                System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                timer.Interval = 300; // 0.3 second delay
+                timer.Tick += (s, args) =>
+                {
+                    timer.Stop();
+                    timer.Dispose();
+
+                    FindProductByBarcode(barcode);
+
+                    // Clear for next scan
+                    txtBarcode.Text = "";
+                    txtBarcode.Focus();
+                };
+                timer.Start();
+            }
+        }
+
+        private void btnScanBarcode_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Filter = "Image files (*.jpg, *.jpeg, *.png, *.bmp)|*.jpg;*.jpeg;*.png;*.bmp";
+                    openFileDialog.Title = "Select barcode image to scan";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string barcodeText = ScanBarcodeFromImage(openFileDialog.FileName);
+
+                        if (!string.IsNullOrEmpty(barcodeText))
+                        {
+                            txtBarcode.Text = barcodeText;
+                            // AUTO-ADD TO ORDER - this is what you want!
+                            FindProductByBarcode(barcodeText);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No barcode found in the selected image.", "Scan Failed",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error scanning barcode: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void txtBarcode_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                string barcode = txtBarcode.Text.Trim();
+
+                if (!string.IsNullOrEmpty(barcode))
+                {
+                    FindProductByBarcode(barcode);
+                    txtBarcode.Text = "";
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void btnPrintReceipt_Click(object sender, EventArgs e)
+        {
+            if (currentOrder != null)
+            {
+                // Show preview first
+                PrintPreviewDialog previewDialog = new PrintPreviewDialog();
+                previewDialog.Document = printDocument;
+
+                if (previewDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // After user closes preview, ask if they want to print
+                    DialogResult result = MessageBox.Show(
+                        "Do you want to print this receipt?",
+                        "Print Receipt",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        PrintReceipt(); // This actually prints
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please complete an order first.", "No Order Data");
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSearch_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+           
+        }
+
+        private void txtSearch_Click(object sender, EventArgs e)
+        {
+            txtSearch.ForeColor = Color.Black;
+            txtSearch.Clear();
+        }
+    }
+
+        }

@@ -42,7 +42,7 @@ namespace Vegetable_Ordering_System
         }
 
 
-        
+
 
 
         private void AddStock_Load(object sender, EventArgs e)
@@ -67,7 +67,10 @@ namespace Vegetable_Ordering_System
 
             // Set default date to today
             dtpDateDelivery.Value = DateTime.Now;
+
+           
         }
+
 
         private void LoadSuppliers()
         {
@@ -272,12 +275,18 @@ namespace Vegetable_Ordering_System
                 {
                     conn.Open();
 
-                    string query = @"INSERT INTO tbl_Products 
-                 (ProductName, Category, Stock, Price, SupplierID, ImagePath)
-                 VALUES
-                 (@name, @category, @stock, @price, @supplierID, @imagePath)";
+                    // STEP 1: Insert product and get the ProductID
+                    string insertQuery = @"
+                INSERT INTO tbl_Products 
+                (ProductName, Category, Stock, Price, SupplierID, ImagePath)
+                OUTPUT INSERTED.ProductID
+                VALUES
+                (@name, @category, @stock, @price, @supplierID, @imagePath)";
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    int newProductId;
+                    string generatedBarcode = "";
+
+                    using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@name", txtVegetableName.Text.Trim());
                         cmd.Parameters.AddWithValue("@category", cmbCategory.SelectedItem?.ToString() ?? "");
@@ -294,7 +303,7 @@ namespace Vegetable_Ordering_System
                             cmd.Parameters.AddWithValue("@supplierID", DBNull.Value);
                         }
 
-                        // Image Path - ADD THIS
+                        // Image Path
                         if (!string.IsNullOrEmpty(imageFileName))
                         {
                             cmd.Parameters.AddWithValue("@imagePath", imageFileName);
@@ -304,15 +313,42 @@ namespace Vegetable_Ordering_System
                             cmd.Parameters.AddWithValue("@imagePath", DBNull.Value);
                         }
 
-                        cmd.ExecuteNonQuery();
+                        // Get the new ProductID
+                        newProductId = (int)cmd.ExecuteScalar();
+
+                        // STEP 2: Generate barcode using the actual ProductID
+                        string timestamp = DateTime.Now.ToString("yyyyMMdd");
+                        generatedBarcode = $"VEG{timestamp}{newProductId:D3}";
+
+                        // STEP 3: Update the record with the generated barcode
+                        string updateQuery = "UPDATE tbl_Products SET Barcode = @Barcode WHERE ProductID = @ProductID";
+                        using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
+                        {
+                            updateCmd.Parameters.AddWithValue("@Barcode", generatedBarcode);
+                            updateCmd.Parameters.AddWithValue("@ProductID", newProductId);
+                            updateCmd.ExecuteNonQuery();
+                        }
                     }
+
+                    DialogResult result = MessageBox.Show(
+     $"Product added successfully!\n\n" +
+     $"Product: {txtVegetableName.Text.Trim()}\n" +
+     $"Barcode: {generatedBarcode}\n\n" +
+     "Do you want to view and print the barcode?",
+     "Success",
+     MessageBoxButtons.YesNo,
+     MessageBoxIcon.Information);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        // Show barcode form
+                        BarcodePrintForm barcodeForm = new BarcodePrintForm(generatedBarcode, txtVegetableName.Text.Trim());
+                        barcodeForm.ShowDialog();
+                    }
+
+                    _parentform?.LoadProducts();
+                    this.Close();
                 }
-
-                MessageBox.Show("Product added successfully!", "Saved",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                _parentform?.LoadProducts();
-                this.Close();
             }
             catch (Exception ex)
             {
@@ -382,14 +418,39 @@ namespace Vegetable_Ordering_System
             dtpDateDelivery.Value = DateTime.Now;
             errorProvider1.Clear();
 
-            // Clear image - ADD THESE LINES
+            
             imageFilePath = "";
             if (txtImagePath != null)
                 txtImagePath.Text = "";
             if (picProductImage != null)
                 picProductImage.Image = null;
-        }
 
+            
+        }
+        private bool IsBarcodeUnique(string barcode)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT COUNT(*) FROM tbl_Products WHERE Barcode = @Barcode";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Barcode", barcode);
+                        int count = (int)cmd.ExecuteScalar();
+                        return count == 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error checking barcode uniqueness: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -443,6 +504,58 @@ namespace Vegetable_Ordering_System
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+            }
+        }
+
+        private string GenerateBarcode()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // Get the next available barcode number
+                    string query = "SELECT ISNULL(MAX(CAST(SUBSTRING(Barcode, 4, LEN(Barcode)) AS INT)), 0) FROM tbl_Products WHERE Barcode LIKE 'VEG%'";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        int lastBarcodeNumber = (int)cmd.ExecuteScalar();
+                        int nextBarcodeNumber = lastBarcodeNumber + 1;
+
+                        // Format: VEG + YYYYMMDD + sequential number (4 digits)
+                        string timestamp = DateTime.Now.ToString("yyyyMMdd");
+                        string barcode = $"VEG{timestamp}{nextBarcodeNumber:D4}";
+
+                        // **ADD UNIQUENESS CHECK**
+                        if (!IsBarcodeUnique(barcode))
+                        {
+                            // If not unique, try with incremented number
+                            int safetyCounter = 0;
+                            do
+                            {
+                                nextBarcodeNumber++;
+                                barcode = $"VEG{timestamp}{nextBarcodeNumber:D4}";
+                                safetyCounter++;
+                            } while (!IsBarcodeUnique(barcode) && safetyCounter < 100);
+
+                            if (safetyCounter >= 100)
+                            {
+                                // Fallback to timestamp-based barcode
+                                barcode = $"VEG{DateTime.Now:yyyyMMddHHmmssfff}";
+                            }
+                        }
+
+                        return barcode;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error generating barcode: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Fallback barcode generation with timestamp
+                return $"VEG{DateTime.Now:yyyyMMddHHmmssfff}";
             }
         }
 
