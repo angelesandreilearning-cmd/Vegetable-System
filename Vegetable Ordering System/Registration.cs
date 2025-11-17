@@ -204,8 +204,7 @@ namespace Vegetable_Ordering_System
 
         
                 this.Hide();
-                Log_In loginForm = new Log_In();
-                loginForm.Show();
+               
             }
             catch (Exception ex)
             {
@@ -228,9 +227,7 @@ namespace Vegetable_Ordering_System
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
-            Log_In log_In = new Log_In();
-            log_In.Show();
-
+           
         }
 
         private void Registration_Load_1(object sender, EventArgs e)

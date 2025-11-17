@@ -42,8 +42,8 @@
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column5 = new System.Windows.Forms.DataGridViewButtonColumn();
             this.Column6 = new System.Windows.Forms.DataGridViewButtonColumn();
             this.txtSearch = new System.Windows.Forms.TextBox();
@@ -207,17 +207,19 @@
             this.Column7,
             this.Column1,
             this.Column2,
-            this.Column3,
             this.Column4,
+            this.Column3,
             this.Column5,
             this.Column6});
+            this.dgv_supplier.GridColor = System.Drawing.Color.DarkGreen;
             this.dgv_supplier.Location = new System.Drawing.Point(312, 218);
             this.dgv_supplier.Name = "dgv_supplier";
             this.dgv_supplier.RowHeadersWidth = 51;
             this.dgv_supplier.RowTemplate.Height = 24;
             this.dgv_supplier.Size = new System.Drawing.Size(1100, 600);
             this.dgv_supplier.TabIndex = 3;
-            this.dgv_supplier.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_supplier_CellContentClick);
+            this.dgv_supplier.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_supplier_CellClick);
+         
             // 
             // Column7
             // 
@@ -240,19 +242,19 @@
             this.Column2.MinimumWidth = 6;
             this.Column2.Name = "Column2";
             // 
-            // Column3
-            // 
-            this.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column3.HeaderText = "Email";
-            this.Column3.MinimumWidth = 6;
-            this.Column3.Name = "Column3";
-            // 
             // Column4
             // 
             this.Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Column4.HeaderText = "Address";
             this.Column4.MinimumWidth = 6;
             this.Column4.Name = "Column4";
+            // 
+            // Column3
+            // 
+            this.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column3.HeaderText = "Email";
+            this.Column3.MinimumWidth = 6;
+            this.Column3.Name = "Column3";
             // 
             // Column5
             // 
@@ -276,11 +278,11 @@
             // 
             // txtSearch
             // 
-            this.txtSearch.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSearch.ForeColor = System.Drawing.Color.Gainsboro;
             this.txtSearch.Location = new System.Drawing.Point(312, 148);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(879, 38);
+            this.txtSearch.Size = new System.Drawing.Size(879, 34);
             this.txtSearch.TabIndex = 4;
             this.txtSearch.Text = "Search";
             this.txtSearch.Click += new System.EventHandler(this.txtSearch_Click_1);
@@ -295,7 +297,7 @@
             this.btnAddSupplier.ForeColor = System.Drawing.Color.White;
             this.btnAddSupplier.Location = new System.Drawing.Point(1231, 142);
             this.btnAddSupplier.Name = "btnAddSupplier";
-            this.btnAddSupplier.Size = new System.Drawing.Size(181, 40);
+            this.btnAddSupplier.Size = new System.Drawing.Size(188, 43);
             this.btnAddSupplier.TabIndex = 5;
             this.btnAddSupplier.Text = "Add Supplier";
             this.btnAddSupplier.UseVisualStyleBackColor = false;
@@ -317,9 +319,9 @@
             this.panel2.Controls.Add(this.lblTime);
             this.panel2.Controls.Add(this.lblCurrentUser);
             this.panel2.Controls.Add(this.label1);
-            this.panel2.Location = new System.Drawing.Point(198, 0);
+            this.panel2.Location = new System.Drawing.Point(200, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1304, 100);
+            this.panel2.Size = new System.Drawing.Size(1302, 100);
             this.panel2.TabIndex = 38;
             // 
             // label8
@@ -440,14 +442,14 @@
         private System.Windows.Forms.Label lblTime;
         private System.Windows.Forms.Label lblCurrentUser;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewButtonColumn Column5;
         private System.Windows.Forms.DataGridViewButtonColumn Column6;
-        private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Label label8;
     }
 }

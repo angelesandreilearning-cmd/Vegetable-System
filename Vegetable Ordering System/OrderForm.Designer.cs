@@ -48,6 +48,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.btnPrintReceipt = new System.Windows.Forms.Button();
             this.btnPlaceOrder = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtChange = new System.Windows.Forms.TextBox();
@@ -71,7 +72,6 @@
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtBarcode = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.btnPrintReceipt = new System.Windows.Forms.Button();
             this.panelNav.SuspendLayout();
             this.panelSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -262,7 +262,7 @@
             this.lblTime.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(72)))), ((int)(((byte)(58)))));
             this.lblTime.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTime.Location = new System.Drawing.Point(1137, 52);
+            this.lblTime.Location = new System.Drawing.Point(1174, 50);
             this.lblTime.Name = "lblTime";
             this.lblTime.Size = new System.Drawing.Size(99, 23);
             this.lblTime.TabIndex = 39;
@@ -324,6 +324,20 @@
             this.panel3.Size = new System.Drawing.Size(565, 714);
             this.panel3.TabIndex = 44;
             // 
+            // btnPrintReceipt
+            // 
+            this.btnPrintReceipt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.btnPrintReceipt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPrintReceipt.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPrintReceipt.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnPrintReceipt.Location = new System.Drawing.Point(15, 648);
+            this.btnPrintReceipt.Name = "btnPrintReceipt";
+            this.btnPrintReceipt.Size = new System.Drawing.Size(177, 45);
+            this.btnPrintReceipt.TabIndex = 47;
+            this.btnPrintReceipt.Text = "Print Receipt ";
+            this.btnPrintReceipt.UseVisualStyleBackColor = false;
+            this.btnPrintReceipt.Click += new System.EventHandler(this.btnPrintReceipt_Click);
+            // 
             // btnPlaceOrder
             // 
             this.btnPlaceOrder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
@@ -364,6 +378,7 @@
             this.txtChange.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.txtChange.Location = new System.Drawing.Point(355, 131);
             this.txtChange.Name = "txtChange";
+            this.txtChange.ReadOnly = true;
             this.txtChange.Size = new System.Drawing.Size(132, 30);
             this.txtChange.TabIndex = 54;
             // 
@@ -584,20 +599,6 @@
             this.label9.Size = new System.Drawing.Size(76, 23);
             this.label9.TabIndex = 55;
             this.label9.Text = "Barcode:";
-            // 
-            // btnPrintReceipt
-            // 
-            this.btnPrintReceipt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnPrintReceipt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPrintReceipt.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPrintReceipt.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnPrintReceipt.Location = new System.Drawing.Point(15, 648);
-            this.btnPrintReceipt.Name = "btnPrintReceipt";
-            this.btnPrintReceipt.Size = new System.Drawing.Size(177, 45);
-            this.btnPrintReceipt.TabIndex = 47;
-            this.btnPrintReceipt.Text = "Print Receipt ";
-            this.btnPrintReceipt.UseVisualStyleBackColor = false;
-            this.btnPrintReceipt.Click += new System.EventHandler(this.btnPrintReceipt_Click);
             // 
             // OrderForm
             // 

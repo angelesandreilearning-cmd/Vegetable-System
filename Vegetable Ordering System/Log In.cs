@@ -127,9 +127,7 @@ namespace Vegetable_Ordering_System
 
         private void label1_Click_1(object sender, EventArgs e)
         {
-            Registration regForm = new Registration();
-            regForm.Show();
-            this.Hide();
+            
         }
 
         private void btnLogin_Click_1(object sender, EventArgs e)

@@ -163,30 +163,29 @@ namespace Vegetable_Ordering_System
 
         public void LoadSuppliers()
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open(); 
-
-            SqlCommand command = new SqlCommand("SELECT SupplierID, SupplierName, Contact, Address, Email,Phone  from tbl_Suppliers", connection); 
-            SqlDataReader reader = command.ExecuteReader(); 
-
-            dgv_supplier.Rows.Clear(); 
-            while (reader.Read())
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                dgv_supplier.Rows.Add(
-                    reader["SupplierID"].ToString(),
-                    reader["SupplierName"].ToString(),
-                    reader["Contact"].ToString(),
-                    reader["Address"].ToString(),
-                    reader["Email"].ToString(),
-                    reader["Phone"].ToString(),
-                    "EDIT","DELETE"
+                connection.Open();
+                // Remove Phone from SELECT query
+                SqlCommand command = new SqlCommand("SELECT SupplierID, SupplierName, Contact, Address, Email FROM tbl_Suppliers", connection);
+                SqlDataReader reader = command.ExecuteReader();
 
-                );
-            } 
+                dgv_supplier.Rows.Clear();
+                while (reader.Read())
+                {
+                    dgv_supplier.Rows.Add(
+                        reader["SupplierID"].ToString(),
+                        reader["SupplierName"].ToString(),
+                        reader["Contact"].ToString(),
+                        reader["Address"].ToString(),
+                        reader["Email"].ToString(),
+                        "EDIT",
+                        "DELETE"
+                    );
+                }
+            }
 
-            connection.Close();
-
-        }   
+        }
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             if (txtSearch.Text == "Search")
@@ -205,9 +204,9 @@ namespace Vegetable_Ordering_System
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string query = @"SELECT SupplierID, SupplierName, Contact, Address, Email, Phone 
-                        FROM tbl_Suppliers 
-                        WHERE SupplierName LIKE @Search OR Contact LIKE @Search OR Email LIKE @Search";
+                string query = @"SELECT SupplierID, SupplierName, Contact, Address, Email 
+                FROM tbl_Suppliers 
+                WHERE SupplierName LIKE @Search OR Contact LIKE @Search OR Email LIKE @Search";
 
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Search", "%" + searchText + "%");
@@ -223,15 +222,13 @@ namespace Vegetable_Ordering_System
                         reader["Contact"].ToString(),
                         reader["Address"].ToString(),
                         reader["Email"].ToString(),
-                        reader["Phone"].ToString(),
-                        "EDIT", "DELETE"
+                        "EDIT",
+                        "DELETE"
                     );
                 }
-                connection.Close();
             }
         }
 
-    
 
         private void btnAddSupplier_Click_1(object sender, EventArgs e)
         {
@@ -242,6 +239,14 @@ namespace Vegetable_Ordering_System
         {
             try
             {
+                // Check if supplier has associated products
+                if (HasAssociatedProducts(supplierID))
+                {
+                    MessageBox.Show("Cannot delete supplier. There are products associated with this supplier.",
+                        "Cannot Delete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -251,42 +256,87 @@ namespace Vegetable_Ordering_System
 
                     if (rowsAffected > 0)
                     {
-                        MessageBox.Show("Supplier successfully deleted!", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadSuppliers();
+                        MessageBox.Show("Supplier successfully deleted!", "Deleted",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadSuppliers(); // Refresh the list
                     }
+                    else
+                    {
+                        MessageBox.Show("Supplier not found.", "Not Found",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                if (sqlEx.Number == 547) // Foreign key constraint
+                {
+                    MessageBox.Show("Cannot delete supplier. There are products associated with this supplier.",
+                        "Cannot Delete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    MessageBox.Show($"Database error: {sqlEx.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error deleting supplier: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error deleting supplier: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void dgv_supplier_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private bool HasAssociatedProducts(int supplierID)
         {
-            if (e.RowIndex < 0) return;
-
-            switch (e.ColumnIndex)
+            try
             {
-                case 6:
-                    EditSupplier(e.RowIndex);
-                    break;
-
-                case 7:
-                    if (MessageBox.Show("Are you sure you want to delete this supplier?",
-                        "DELETE RECORD", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        int supplierID = Convert.ToInt32(dgv_supplier.Rows[e.RowIndex].Cells[0].Value.ToString());
-                        deleteSupplier(supplierID);
-                    }
-                    break;
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand command = new SqlCommand("SELECT COUNT(*) FROM tbl_Products WHERE SupplierID = @SupplierID", conn);
+                    command.Parameters.AddWithValue("@SupplierID", supplierID);
+                    int count = Convert.ToInt32(command.ExecuteScalar());
+                    return count > 0;
+                }
+            }
+            catch
+            {
+                return false; // If we can't check, proceed with deletion
             }
         }
-        private void EditSupplier(int rowIndex)
+
+
+        private void EditSupplierRow(int rowIndex)
         {
-            int supplierID = Convert.ToInt32(dgv_supplier.Rows[rowIndex].Cells[0].Value);
-            string name = dgv_supplier.Rows[rowIndex].Cells[1].Value.ToString();
-            MessageBox.Show($"Edit supplier: {name}", "Edit Supplier");
+            try
+            {
+                if (rowIndex < 0 || rowIndex >= dgv_supplier.Rows.Count)
+                {
+                    MessageBox.Show("Invalid row selected.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (dgv_supplier.Rows[rowIndex].Cells[0].Value == null)
+                {
+                    MessageBox.Show("Invalid supplier selected.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int supplierID = Convert.ToInt32(dgv_supplier.Rows[rowIndex].Cells[0].Value);
+                string supplierName = dgv_supplier.Rows[rowIndex].Cells[1].Value?.ToString() ?? "Unknown";
+
+                // Open the edit form
+                EditSupplier editForm = new EditSupplier(this, supplierID);
+                editForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error editing supplier: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -331,6 +381,77 @@ namespace Vegetable_Ordering_System
         {
             txtSearch.ForeColor = Color.Black;
             txtSearch.Clear();
+        }
+
+        private void dgv_supplier_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+            if (e.RowIndex < 0 || e.RowIndex >= dgv_supplier.Rows.Count)
+            {
+                return; // Header row or invalid row clicked
+            }
+
+            try
+            {
+                // Debug information
+                string columnName = dgv_supplier.Columns[e.ColumnIndex].HeaderText;
+                Console.WriteLine($"Cell clicked - Row: {e.RowIndex}, Column: {e.ColumnIndex} ('{columnName}')");
+
+                // Check if the row has data
+                if (dgv_supplier.Rows[e.RowIndex].Cells[0].Value == null)
+                {
+                    MessageBox.Show("No supplier data in this row.", "Information",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                int supplierID = Convert.ToInt32(dgv_supplier.Rows[e.RowIndex].Cells[0].Value);
+                string supplierName = dgv_supplier.Rows[e.RowIndex].Cells[1].Value?.ToString() ?? "Unknown";
+
+                // Use column header text to be safe
+                if (columnName == "Edit")
+                {
+                    Console.WriteLine($"EDIT button clicked for: {supplierName} (ID: {supplierID})");
+                    EditSupplierRow(e.RowIndex);
+                }
+                else if (columnName == "Delete")
+                {
+                    Console.WriteLine($"DELETE button clicked for: {supplierName} (ID: {supplierID})");
+                    DeleteSupplierConfirmation(supplierID, supplierName);
+                }
+                else
+                {
+                    Console.WriteLine($"Regular cell clicked in column: {e.ColumnIndex} ('{columnName}')");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error handling click: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"CellClick Error: {ex.Message}");
+            }
+        }
+            private void DeleteSupplierConfirmation(int supplierID, string supplierName)
+        {
+            try
+            {
+                DialogResult result = MessageBox.Show(
+                    $"Are you sure you want to delete supplier '{supplierName}'?\n\nThis action cannot be undone!",
+                    "CONFIRM DELETE",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                {
+                    deleteSupplier(supplierID);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error confirming deletion: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

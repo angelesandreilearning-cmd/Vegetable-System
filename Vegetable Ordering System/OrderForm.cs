@@ -429,23 +429,40 @@ namespace Vegetable_Ordering_System
                         // Calculate change
                         decimal change = payment - total;
 
-                        // Display change
-                        txtChange.Text = $"₱{change:N2}";
+                        // Display change with color coding
+                        if (change < 0)
+                        {
+                            txtChange.Text = $"₱{change:N2}";
+                            txtChange.ForeColor = Color.Red; // Red for negative
+                            txtChange.BackColor = Color.LightPink; // Light red background
+                        }
+                        else
+                        {
+                            txtChange.Text = $"₱{change:N2}";
+                            txtChange.ForeColor = Color.Green; // Green for positive
+                            txtChange.BackColor = Color.LightGreen; // Light green background
+                        }
                     }
                     else
                     {
                         txtChange.Text = "₱0.00";
+                        txtChange.ForeColor = Color.Black;
+                        txtChange.BackColor = SystemColors.Window;
                     }
                 }
                 else
                 {
                     txtChange.Text = "₱0.00";
+                    txtChange.ForeColor = Color.Black;
+                    txtChange.BackColor = SystemColors.Window;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error calculating change: {ex.Message}");
                 txtChange.Text = "₱0.00";
+                txtChange.ForeColor = Color.Black;
+                txtChange.BackColor = SystemColors.Window;
             }
         }
 
@@ -924,7 +941,6 @@ namespace Vegetable_Ordering_System
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-                // REMOVED any reference to IsActive
                 string query = "SELECT ProductName, Price FROM tbl_Products WHERE ProductID = @ProductID";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
@@ -940,8 +956,96 @@ namespace Vegetable_Ordering_System
                 }
             }
 
-        
+            if (string.IsNullOrEmpty(productName))
+            {
+                MessageBox.Show("Product not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Show input dialog for new price
+            using (var editForm = new Form())
+            {
+                editForm.Text = "Edit Product Price";
+                editForm.Size = new Size(300, 200);
+                editForm.StartPosition = FormStartPosition.CenterScreen;
+                editForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                editForm.MaximizeBox = false;
+                editForm.MinimizeBox = false;
+
+                // Product info label
+                var lblInfo = new Label()
+                {
+                    Text = $"Product: {productName}",
+                    Location = new Point(20, 20),
+                    Size = new Size(250, 20),
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold)
+                };
+
+                // Current price label
+                var lblCurrent = new Label()
+                {
+                    Text = $"Current Price: ₱{currentPrice:N2}",
+                    Location = new Point(20, 50),
+                    Size = new Size(250, 20)
+                };
+
+                // New price label
+                var lblNew = new Label()
+                {
+                    Text = "New Price:",
+                    Location = new Point(20, 80),
+                    Size = new Size(80, 20)
+                };
+
+                // Numeric input for new price
+                var numNewPrice = new NumericUpDown()
+                {
+                    Location = new Point(100, 78),
+                    Size = new Size(120, 20),
+                    Minimum = 0.1m,
+                    Maximum = 10000,
+                    DecimalPlaces = 2,
+                    Value = currentPrice
+                };
+
+                // OK button
+                var btnOK = new Button()
+                {
+                    Text = "Update",
+                    Location = new Point(70, 120),
+                    Size = new Size(75, 30),
+                    DialogResult = DialogResult.OK
+                };
+
+                // Cancel button
+                var btnCancel = new Button()
+                {
+                    Text = "Cancel",
+                    Location = new Point(155, 120),
+                    Size = new Size(75, 30),
+                    DialogResult = DialogResult.Cancel
+                };
+
+                // Add controls to form
+                editForm.Controls.AddRange(new Control[] { lblInfo, lblCurrent, lblNew, numNewPrice, btnOK, btnCancel });
+                editForm.AcceptButton = btnOK;
+                editForm.CancelButton = btnCancel;
+
+                // Focus on price input
+                numNewPrice.Select(0, numNewPrice.Text.Length);
+
+                // Show dialog and process result
+                if (editForm.ShowDialog() == DialogResult.OK)
+                {
+                    decimal newPrice = numNewPrice.Value;
+                    if (newPrice != currentPrice)
+                    {
+                        UpdateProductPrice(productId, newPrice, productName);
+                    }
+                }
+            }
         }
+
 
         private Image GetDefaultProductImage()
         {
@@ -1274,7 +1378,7 @@ namespace Vegetable_Ordering_System
         {
             try
             {
-               
+                // Validate customer name
                 if (string.IsNullOrWhiteSpace(txtCustomer.Text))
                 {
                     MessageBox.Show("Please enter customer name.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1282,7 +1386,7 @@ namespace Vegetable_Ordering_System
                     return;
                 }
 
-                
+                // Validate customer name format
                 Regex regex = new Regex(@"^[a-zA-Z\s]+$");
                 if (!regex.IsMatch(txtCustomer.Text))
                 {
@@ -1295,6 +1399,16 @@ namespace Vegetable_Ordering_System
                 if (orderItems.Rows.Count == 0)
                 {
                     MessageBox.Show("Please add products to the order.", "No Items", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // NEW VALIDATION: Check if payment is sufficient
+                if (IsChangeNegative())
+                {
+                    MessageBox.Show("Payment amount is insufficient. Please enter a higher payment amount.",
+                        "Insufficient Payment", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTotalPayment.Focus();
+                    txtTotalPayment.SelectAll();
                     return;
                 }
 
@@ -1321,7 +1435,7 @@ namespace Vegetable_Ordering_System
 
                         if (printResult == DialogResult.Yes)
                         {
-                            PrintReceipt(); 
+                            PrintReceipt();
                         }
 
                         ResetOrderForm();
@@ -1339,7 +1453,34 @@ namespace Vegetable_Ordering_System
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private bool IsChangeNegative()
+        {
+            try
+            {
+                // Get payment amount
+                if (decimal.TryParse(txtTotalPayment.Text, out decimal payment))
+                {
+                    // Get total amount - remove everything except numbers and decimal point
+                    string totalText = lblTotal.Text.Replace("Total: ", "").Replace("₱", "").Replace("₽", "").Trim();
 
+                    if (decimal.TryParse(totalText, out decimal total))
+                    {
+                        // Calculate change
+                        decimal change = payment - total;
+
+                        // Return true if change is negative (insufficient payment)
+                        return change < 0;
+                    }
+                }
+                // If we can't parse the amounts or payment field is empty, treat as negative
+                return true;
+            }
+            catch (Exception)
+            {
+                // If there's any error, treat as negative to prevent order completion
+                return true;
+            }
+        }
         private void PrintReceipt()
         {
             try
@@ -1656,30 +1797,42 @@ namespace Vegetable_Ordering_System
         {
             if (currentOrder != null)
             {
-                // Show preview first
-                PrintPreviewDialog previewDialog = new PrintPreviewDialog();
-                previewDialog.Document = printDocument;
-
-                if (previewDialog.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    // After user closes preview, ask if they want to print
-                    DialogResult result = MessageBox.Show(
-                        "Do you want to print this receipt?",
-                        "Print Receipt",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question);
-
-                    if (result == DialogResult.Yes)
+                    // Check if printers are available
+                    if (PrinterSettings.InstalledPrinters.Count == 0)
                     {
-                        PrintReceipt(); // This actually prints
+                        MessageBox.Show("No printers are installed on this system. Please install a printer first.",
+                            "No Printer Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Show preview first
+                    PrintPreviewDialog previewDialog = new PrintPreviewDialog();
+                    previewDialog.Document = printDocument;
+                    previewDialog.WindowState = FormWindowState.Maximized;
+
+                    if (previewDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // ACTUAL PRINTING HAPPENS HERE
+                        printDocument.Print();
+                        MessageBox.Show("Receipt printed successfully!", "Success",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
+                catch (InvalidPrinterException ex)
+                {
+                    MessageBox.Show($"Printer error: {ex.Message}\n\nPlease check your printer installation.",
+                        "Printer Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
-            {
-                MessageBox.Show("Please complete an order first.", "No Order Data");
+
             }
-        }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {

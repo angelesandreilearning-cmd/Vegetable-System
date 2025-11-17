@@ -54,36 +54,36 @@
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(128, 82);
+            this.txtName.Location = new System.Drawing.Point(143, 82);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(249, 22);
+            this.txtName.Size = new System.Drawing.Size(234, 22);
             this.txtName.TabIndex = 0;
             this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             this.txtName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtName_KeyPress);
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(128, 165);
+            this.txtEmail.Location = new System.Drawing.Point(143, 165);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(249, 22);
+            this.txtEmail.Size = new System.Drawing.Size(234, 22);
             this.txtEmail.TabIndex = 1;
             this.txtEmail.TextChanged += new System.EventHandler(this.txtEmail_TextChanged);
             this.txtEmail.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtEmail_KeyPress);
             // 
             // txtContact
             // 
-            this.txtContact.Location = new System.Drawing.Point(128, 204);
+            this.txtContact.Location = new System.Drawing.Point(143, 204);
             this.txtContact.Name = "txtContact";
-            this.txtContact.Size = new System.Drawing.Size(249, 22);
+            this.txtContact.Size = new System.Drawing.Size(234, 22);
             this.txtContact.TabIndex = 2;
             this.txtContact.TextChanged += new System.EventHandler(this.txtContact_TextChanged);
             this.txtContact.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtContact_KeyPress);
             // 
             // txtAddress
             // 
-            this.txtAddress.Location = new System.Drawing.Point(128, 243);
+            this.txtAddress.Location = new System.Drawing.Point(143, 243);
             this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(249, 22);
+            this.txtAddress.Size = new System.Drawing.Size(234, 22);
             this.txtAddress.TabIndex = 3;
             this.txtAddress.TextChanged += new System.EventHandler(this.txtAddress_TextChanged);
             // 
@@ -148,9 +148,9 @@
             this.cmbRole.Items.AddRange(new object[] {
             "Admin",
             "Merchant"});
-            this.cmbRole.Location = new System.Drawing.Point(128, 287);
+            this.cmbRole.Location = new System.Drawing.Point(143, 287);
             this.cmbRole.Name = "cmbRole";
-            this.cmbRole.Size = new System.Drawing.Size(249, 24);
+            this.cmbRole.Size = new System.Drawing.Size(234, 24);
             this.cmbRole.TabIndex = 9;
             // 
             // label6
@@ -247,9 +247,9 @@
             // 
             // txtUsername
             // 
-            this.txtUsername.Location = new System.Drawing.Point(128, 121);
+            this.txtUsername.Location = new System.Drawing.Point(143, 121);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(249, 22);
+            this.txtUsername.Size = new System.Drawing.Size(234, 22);
             this.txtUsername.TabIndex = 17;
             // 
             // Registration
@@ -258,8 +258,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(411, 520);
-            this.Controls.Add(this.label9);
             this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);

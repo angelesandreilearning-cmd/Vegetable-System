@@ -9,30 +9,63 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace Vegetable_Ordering_System
 {
-    public partial class AddSupplier : Form
+    public partial class EditSupplier : Form
     {
         string connectionString = @"Data Source=LAPTOP-B8MV83P4\SQLEXPRESS01;Initial Catalog=db_vegetableOrdering;Integrated Security=True;";
-        private SupplierForm _parentform;   
+        private SupplierForm _parentForm;
+        private int _supplierID;
 
-        public AddSupplier(SupplierForm parentform)
+        public EditSupplier(SupplierForm parentForm, int supplierID)
         {
             InitializeComponent();
-            _parentform = parentform;
+            _parentForm = parentForm;
+            _supplierID = supplierID;
+            LoadSupplierData();
+        }
+
+        private void LoadSupplierData()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    // Remove "Phone" from the SELECT query since you're not using it
+                    string query = "SELECT SupplierName, Contact, Address, Email FROM tbl_Suppliers WHERE SupplierID = @SupplierID";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@SupplierID", _supplierID);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        txtName.Text = reader["SupplierName"].ToString();
+                        txtContact.Text = reader["Contact"].ToString();
+                        txtAddress.Text = reader["Address"].ToString();
+                        txtEmail.Text = reader["Email"].ToString();
+                        // Phone field removed since it's not in your database table
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading supplier data: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void txtName_TextChanged(object sender, EventArgs e)
         {
-
             if (string.IsNullOrWhiteSpace(txtName.Text))
             {
                 errorProvider1.SetError(txtName, "Name cannot be empty or spaces only.");
             }
             else
             {
-
                 Regex regex = new Regex(@"^[a-zA-Z\s]+$");
                 if (!regex.IsMatch(txtName.Text))
                 {
@@ -47,7 +80,6 @@ namespace Vegetable_Ordering_System
 
         private void txtName_KeyPress(object sender, KeyPressEventArgs e)
         {
-
             if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
             {
                 e.Handled = true;
@@ -58,9 +90,6 @@ namespace Vegetable_Ordering_System
                 errorProvider1.SetError(txtName, "");
             }
         }
-
-
-
 
         private void txtContact_TextChanged(object sender, EventArgs e)
         {
@@ -74,7 +103,6 @@ namespace Vegetable_Ordering_System
                 errorProvider1.SetError(txtContact, "");
             }
         }
-
 
         private void txtEmail_TextChanged(object sender, EventArgs e)
         {
@@ -101,14 +129,6 @@ namespace Vegetable_Ordering_System
             }
         }
 
-
-
-        private void AddSupplier_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
-
-
         private void txtContact_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
@@ -122,48 +142,51 @@ namespace Vegetable_Ordering_System
             }
         }
 
-        private void AddSupplier_Load(object sender, EventArgs e)
+        private void btnUpdateSupplier_Click(object sender, EventArgs e)
         {
+          if (!ValidateAllFields())
+        return;
 
-        }
-
-        private void btnAddSupplier_Click(object sender, EventArgs e)
+    try
+    {
+        using (SqlConnection conn = new SqlConnection(connectionString))
         {
-            if (!ValidateAllFields())
-                return;
+            conn.Open();
+            
+            // Remove Phone from the UPDATE query since your table doesn't have it
+            SqlCommand command = new SqlCommand(
+                "UPDATE tbl_Suppliers SET SupplierName = @name, Contact = @contact, " +
+                "Address = @address, Email = @email WHERE SupplierID = @supplierID", conn);
 
-            try
+            command.Parameters.AddWithValue("@name", txtName.Text.Trim());
+            command.Parameters.AddWithValue("@contact", txtContact.Text.Trim());
+            command.Parameters.AddWithValue("@address", txtAddress.Text.Trim());
+            command.Parameters.AddWithValue("@email", txtEmail.Text.Trim());
+            command.Parameters.AddWithValue("@supplierID", _supplierID);
+
+            int rowsAffected = command.ExecuteNonQuery();
+
+            if (rowsAffected > 0)
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-                    // Remove Phone from the INSERT query since your table doesn't have it
-                    SqlCommand command = new SqlCommand(
-                        "INSERT INTO tbl_Suppliers (SupplierName, Contact, Address, Email) " +
-                        "VALUES (@name, @contact, @address, @email)", conn);
-
-                    command.Parameters.AddWithValue("@name", txtName.Text.Trim());
-                    command.Parameters.AddWithValue("@contact", txtContact.Text.Trim());
-                    command.Parameters.AddWithValue("@address", txtAddress.Text.Trim());
-                    command.Parameters.AddWithValue("@email", txtEmail.Text.Trim());
-
-                    int rowsAffected = command.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
-                    {
-                        MessageBox.Show("Supplier added successfully!", "Success",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        _parentform.LoadSuppliers();
-                        this.Close();
-                    }
-                }
+                MessageBox.Show("Supplier updated successfully!", "Success",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _parentForm.LoadSuppliers();
+                this.Close();
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error adding supplier: {ex.Message}", "Database Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No changes were made to the supplier.", "Information",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"Error updating supplier: {ex.Message}", "Database Error",
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+        }
+
         private bool ValidateAllFields()
         {
             bool isValid = true;
@@ -211,9 +234,14 @@ namespace Vegetable_Ordering_System
             this.Close();
         }
 
-        private void AddSupplier_Load_1(object sender, EventArgs e)
+        private void EditSupplier_Load(object sender, EventArgs e)
         {
+            // Form load logic if needed
+        }
 
+        private void EditSupplier_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Key press logic if needed
         }
     }
 }

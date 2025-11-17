@@ -1,6 +1,6 @@
 ﻿namespace Vegetable_Ordering_System
 {
-    partial class AddSupplier
+    partial class EditSupplier
     {
         /// <summary>
         /// Required designer variable.
@@ -37,7 +37,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.btnAddSupplier = new System.Windows.Forms.Button();
+            this.btnUpdateSupplier = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.btnCancel = new System.Windows.Forms.Button();
@@ -124,19 +124,19 @@
             this.label4.TabIndex = 8;
             this.label4.Text = "Address";
             // 
-            // btnAddSupplier
+            // btnUpdateSupplier
             // 
-            this.btnAddSupplier.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnAddSupplier.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnAddSupplier.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAddSupplier.ForeColor = System.Drawing.Color.White;
-            this.btnAddSupplier.Location = new System.Drawing.Point(43, 369);
-            this.btnAddSupplier.Name = "btnAddSupplier";
-            this.btnAddSupplier.Size = new System.Drawing.Size(212, 44);
-            this.btnAddSupplier.TabIndex = 10;
-            this.btnAddSupplier.Text = "Add Supplier";
-            this.btnAddSupplier.UseVisualStyleBackColor = false;
-            this.btnAddSupplier.Click += new System.EventHandler(this.btnAddSupplier_Click);
+            this.btnUpdateSupplier.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.btnUpdateSupplier.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnUpdateSupplier.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUpdateSupplier.ForeColor = System.Drawing.Color.White;
+            this.btnUpdateSupplier.Location = new System.Drawing.Point(43, 326);
+            this.btnUpdateSupplier.Name = "btnUpdateSupplier";
+            this.btnUpdateSupplier.Size = new System.Drawing.Size(212, 44);
+            this.btnUpdateSupplier.TabIndex = 10;
+            this.btnUpdateSupplier.Text = "Update Supplier";
+            this.btnUpdateSupplier.UseVisualStyleBackColor = false;
+            this.btnUpdateSupplier.Click += new System.EventHandler(this.btnUpdateSupplier_Click);
             // 
             // label6
             // 
@@ -144,9 +144,9 @@
             this.label6.Font = new System.Drawing.Font("Segoe UI Black", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(125, 32);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(198, 38);
+            this.label6.Size = new System.Drawing.Size(195, 38);
             this.label6.TabIndex = 11;
-            this.label6.Text = "Add Supplier";
+            this.label6.Text = "Edit Supplier";
             // 
             // errorProvider1
             // 
@@ -158,7 +158,7 @@
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancel.ForeColor = System.Drawing.Color.White;
-            this.btnCancel.Location = new System.Drawing.Point(261, 369);
+            this.btnCancel.Location = new System.Drawing.Point(261, 326);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(129, 44);
             this.btnCancel.TabIndex = 12;
@@ -166,15 +166,15 @@
             this.btnCancel.UseVisualStyleBackColor = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // AddSupplier
+            // EditSupplier
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(438, 482);
+            this.ClientSize = new System.Drawing.Size(438, 397);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.btnAddSupplier);
+            this.Controls.Add(this.btnUpdateSupplier);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -185,11 +185,11 @@
             this.Controls.Add(this.txtName);
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "AddSupplier";
+            this.Name = "EditSupplier";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Add Supplier";
-            this.Load += new System.EventHandler(this.AddSupplier_Load_1);
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AddSupplier_KeyPress);
+            this.Text = "Edit Supplier";
+            this.Load += new System.EventHandler(this.EditSupplier_Load);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EditSupplier_KeyPress);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -206,7 +206,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button btnAddSupplier;
+        private System.Windows.Forms.Button btnUpdateSupplier;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.Button btnCancel;

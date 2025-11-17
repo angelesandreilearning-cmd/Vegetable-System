@@ -56,7 +56,19 @@ namespace Vegetable_Ordering_System
         public ProductItemControl()
         {
             InitializeComponent();
-         
+            
+
+            lblEditPrice.Cursor = Cursors.Hand;
+            label1.Cursor = Cursors.Hand;
+            lblEditPrice.ForeColor = Color.Green;
+            label1.ForeColor = Color.Black;
+
+            lblEditPrice.MouseEnter += (s, e) => lblEditPrice.ForeColor = Color.DarkGreen;
+            lblEditPrice.MouseLeave += (s, e) => lblEditPrice.ForeColor = Color.Green;
+
+            label1.MouseEnter += (s, e) => label1.ForeColor = Color.DarkRed;
+            label1.MouseLeave += (s, e) => label1.ForeColor = Color.Black;
+
         }
 
         private Image GetDefaultImage()

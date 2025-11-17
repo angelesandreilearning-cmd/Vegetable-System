@@ -14,15 +14,18 @@ using System.Xml.Linq;
 
 namespace Vegetable_Ordering_System
 {
-    public partial class AddStock : Form
+    public partial class EditStock : Form
     {
         string connectionString = @"Data Source=LAPTOP-B8MV83P4\SQLEXPRESS01;Initial Catalog=db_vegetableOrdering;Integrated Security=True;";
         private InventoryForm _parentform;
         private string imageFilePath = "";
-        public AddStock(InventoryForm parentform)
+        private int _productID;
+
+        public EditStock(InventoryForm parentform, int productID)
         {
             InitializeComponent();
             _parentform = parentform;
+            _productID = productID;
         }
 
         private void RoundCorners(Button btn, int radius)
@@ -41,11 +44,7 @@ namespace Vegetable_Ordering_System
             btn.Region = new Region(path);
         }
 
-
-
-
-
-        private void AddStock_Load(object sender, EventArgs e)
+        private void EditStock_Load(object sender, EventArgs e)
         {
             RoundCorners(btnSave, 20);
             RoundCorners(btnClear, 20);
@@ -65,12 +64,79 @@ namespace Vegetable_Ordering_System
             // Load suppliers into dropdown
             LoadSuppliers();
 
-            // Set default date to today
-            dtpDateDelivery.Value = DateTime.Now;
-
-           
+            // Load existing product data
+            LoadProductData();
         }
 
+        private void LoadProductData()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"SELECT ProductName, Category, Stock, Price, SupplierID, 
+                            ImagePath, DateDelivered, Supplier, Barcode, Unit 
+                            FROM tbl_Products WHERE ProductID = @ProductID";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ProductID", _productID);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                txtVegetableName.Text = reader["ProductName"].ToString();
+                                txtQuantity.Text = reader["Stock"].ToString();
+                                txtPrice.Text = reader["Price"].ToString();
+
+                                // Set category
+                                string category = reader["Category"].ToString();
+                                if (cmbCategory.Items.Contains(category))
+                                    cmbCategory.SelectedItem = category;
+
+                                // Set unit
+                                string unit = reader["Unit"].ToString();
+                                if (cmbUnit.Items.Contains(unit))
+                                    cmbUnit.SelectedItem = unit;
+
+                                // Set supplier
+                                if (reader["SupplierID"] != DBNull.Value)
+                                {
+                                    int supplierID = Convert.ToInt32(reader["SupplierID"]);
+                                    cmbSupplierName.SelectedValue = supplierID;
+                                }
+
+                                // Set date delivered
+                                if (reader["DateDelivered"] != DBNull.Value)
+                                    dtpDateDelivery.Value = Convert.ToDateTime(reader["DateDelivered"]);
+
+                                // Load image if exists
+                                if (reader["ImagePath"] != DBNull.Value)
+                                {
+                                    string imagePath = reader["ImagePath"].ToString();
+                                    string fullImagePath = System.IO.Path.Combine(Application.StartupPath, "ProductImages", imagePath);
+
+                                    if (System.IO.File.Exists(fullImagePath))
+                                    {
+                                        picProductImage.Image = Image.FromFile(fullImagePath);
+                                        txtImagePath.Text = imagePath;
+                                    }
+                                }
+
+                                CalculateTotalCost();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading product data: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         private void LoadSuppliers()
         {
@@ -97,6 +163,7 @@ namespace Vegetable_Ordering_System
                 MessageBox.Show("Error loading suppliers: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void CalculateTotalCost()
         {
             if (decimal.TryParse(txtPrice.Text, out decimal price) &&
@@ -125,13 +192,11 @@ namespace Vegetable_Ordering_System
             }
         }
 
-
-
         private void txtVegetableName_TextChanged(object sender, EventArgs e)
         {
             ValidateVegetableName();
-           
         }
+
         private void ValidateVegetableName()
         {
             if (string.IsNullOrWhiteSpace(txtVegetableName.Text))
@@ -216,18 +281,13 @@ namespace Vegetable_Ordering_System
             CalculateTotalCost();
         }
 
-       
-
         private void cmbUnit_SelectedIndexChanged(object sender, EventArgs e)
         {
             CalculateTotalCost();
         }
 
-       
-
         private void txtVegetableName_KeyPress(object sender, KeyPressEventArgs e)
         {
-
             if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
             {
                 e.Handled = true;
@@ -239,9 +299,6 @@ namespace Vegetable_Ordering_System
             }
         }
 
-      
-
-       
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateAllFields())
@@ -249,9 +306,9 @@ namespace Vegetable_Ordering_System
 
             try
             {
-                string imageFileName = "";
+                string imageFileName = txtImagePath.Text; // Keep existing image by default
 
-                // Copy image to application folder if one was selected
+                // Copy new image to application folder if one was selected
                 if (!string.IsNullOrEmpty(imageFilePath))
                 {
                     string imagesFolder = System.IO.Path.Combine(Application.StartupPath, "ProductImages");
@@ -275,23 +332,27 @@ namespace Vegetable_Ordering_System
                 {
                     conn.Open();
 
-                    // UPDATED INSERT QUERY TO INCLUDE NEW FIELDS
-                    string insertQuery = @"
-                INSERT INTO tbl_Products 
-                (ProductName, Category, Stock, Price, SupplierID, ImagePath, DateDelivered, Supplier)
-                OUTPUT INSERTED.ProductID
-                VALUES
-                (@name, @category, @stock, @price, @supplierID, @imagePath, @dateDelivered, @supplier)";
+                    // UPDATE QUERY FOR EXISTING PRODUCT
+                    string updateQuery = @"
+                UPDATE tbl_Products 
+                SET ProductName = @name, 
+                    Category = @category, 
+                    Stock = @stock, 
+                    Price = @price, 
+                    SupplierID = @supplierID, 
+                    ImagePath = @imagePath, 
+                    DateDelivered = @dateDelivered, 
+                    Supplier = @supplier,
+                    Unit = @unit
+                WHERE ProductID = @productID";
 
-                    int newProductId;
-                    string generatedBarcode = "";
-
-                    using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
+                    using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@name", txtVegetableName.Text.Trim());
                         cmd.Parameters.AddWithValue("@category", cmbCategory.SelectedItem?.ToString() ?? "");
                         cmd.Parameters.AddWithValue("@stock", int.Parse(txtQuantity.Text));
                         cmd.Parameters.AddWithValue("@price", decimal.Parse(txtPrice.Text));
+                        cmd.Parameters.AddWithValue("@unit", cmbUnit.SelectedItem?.ToString() ?? "");
 
                         // Supplier ID
                         if (cmbSupplierName.SelectedValue != null)
@@ -303,13 +364,13 @@ namespace Vegetable_Ordering_System
                             cmd.Parameters.AddWithValue("@supplierID", DBNull.Value);
                         }
 
-                        // NEW: Date Delivered
+                        // Date Delivered
                         cmd.Parameters.AddWithValue("@dateDelivered", dtpDateDelivery.Value);
 
-                        // NEW: Supplier Name (from dropdown text)
+                        // Supplier Name (from dropdown text)
                         cmd.Parameters.AddWithValue("@supplier", cmbSupplierName.Text);
 
-                        // Image Path
+                        // Image Path - use existing if no new image selected
                         if (!string.IsNullOrEmpty(imageFileName))
                         {
                             cmd.Parameters.AddWithValue("@imagePath", imageFileName);
@@ -319,49 +380,32 @@ namespace Vegetable_Ordering_System
                             cmd.Parameters.AddWithValue("@imagePath", DBNull.Value);
                         }
 
-                        // Get the new ProductID
-                        newProductId = (int)cmd.ExecuteScalar();
+                        cmd.Parameters.AddWithValue("@productID", _productID);
 
-                        // STEP 2: Generate barcode using the actual ProductID
-                        string timestamp = DateTime.Now.ToString("yyyyMMdd");
-                        generatedBarcode = $"VEG{timestamp}{newProductId:D3}";
+                        int rowsAffected = cmd.ExecuteNonQuery();
 
-                        // STEP 3: Update the record with the generated barcode
-                        string updateQuery = "UPDATE tbl_Products SET Barcode = @Barcode WHERE ProductID = @ProductID";
-                        using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
+                        if (rowsAffected > 0)
                         {
-                            updateCmd.Parameters.AddWithValue("@Barcode", generatedBarcode);
-                            updateCmd.Parameters.AddWithValue("@ProductID", newProductId);
-                            updateCmd.ExecuteNonQuery();
+                            MessageBox.Show("Product updated successfully!", "Success",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            _parentform?.LoadProducts();
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No changes were made to the product.", "Information",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
-
-                    DialogResult result = MessageBox.Show(
-                        $"Product added successfully!\n\n" +
-                        $"Product: {txtVegetableName.Text.Trim()}\n" +
-                        $"Barcode: {generatedBarcode}\n\n" +
-                        "Do you want to view and print the barcode?",
-                        "Success",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Information);
-
-                    if (result == DialogResult.Yes)
-                    {
-                        // Show barcode form
-                        BarcodePrintForm barcodeForm = new BarcodePrintForm(generatedBarcode, txtVegetableName.Text.Trim());
-                        barcodeForm.ShowDialog();
-                    }
-
-                    _parentform?.LoadProducts();
-                    this.Close();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving product: {ex.Message}", "Database Error",
+                MessageBox.Show($"Error updating product: {ex.Message}", "Database Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private bool ValidateAllFields()
         {
             bool isValid = true;
@@ -414,55 +458,17 @@ namespace Vegetable_Ordering_System
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            txtVegetableName.Clear();
-            txtQuantity.Clear();
-            txtPrice.Clear();
-            txtTotalCost.Clear();
-            cmbCategory.SelectedIndex = -1;
-            cmbUnit.SelectedIndex = 0;
-            cmbSupplierName.SelectedIndex = -1;
-            dtpDateDelivery.Value = DateTime.Now;
+            // For edit form, clearing might not be appropriate
+            // Instead, reload the original data
+            LoadProductData();
             errorProvider1.Clear();
-
-            
-            imageFilePath = "";
-            if (txtImagePath != null)
-                txtImagePath.Text = "";
-            if (picProductImage != null)
-                picProductImage.Image = null;
-
-            
         }
-        private bool IsBarcodeUnique(string barcode)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-                    string query = "SELECT COUNT(*) FROM tbl_Products WHERE Barcode = @Barcode";
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@Barcode", barcode);
-                        int count = (int)cmd.ExecuteScalar();
-                        return count == 0;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error checking barcode uniqueness: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-       
         private void txtTotalCost_TextChanged(object sender, EventArgs e)
         {
             // Keep this empty - needed for the event
@@ -488,13 +494,13 @@ namespace Vegetable_Ordering_System
                         // Get the selected file
                         imageFilePath = openFileDialog.FileName;
 
-                        // Display in textbox (if you have one)
+                        // Display in textbox
                         if (txtImagePath != null)
                         {
                             txtImagePath.Text = System.IO.Path.GetFileName(imageFilePath);
                         }
 
-                        // Optional: Display image preview if you have a PictureBox
+                        // Display image preview
                         if (picProductImage != null)
                         {
                             Image originalImage = Image.FromFile(imageFilePath);
@@ -510,58 +516,6 @@ namespace Vegetable_Ordering_System
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-            }
-        }
-
-        private string GenerateBarcode()
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-
-                    // Get the next available barcode number
-                    string query = "SELECT ISNULL(MAX(CAST(SUBSTRING(Barcode, 4, LEN(Barcode)) AS INT)), 0) FROM tbl_Products WHERE Barcode LIKE 'VEG%'";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        int lastBarcodeNumber = (int)cmd.ExecuteScalar();
-                        int nextBarcodeNumber = lastBarcodeNumber + 1;
-
-                        // Format: VEG + YYYYMMDD + sequential number (4 digits)
-                        string timestamp = DateTime.Now.ToString("yyyyMMdd");
-                        string barcode = $"VEG{timestamp}{nextBarcodeNumber:D4}";
-
-                        // **ADD UNIQUENESS CHECK**
-                        if (!IsBarcodeUnique(barcode))
-                        {
-                            // If not unique, try with incremented number
-                            int safetyCounter = 0;
-                            do
-                            {
-                                nextBarcodeNumber++;
-                                barcode = $"VEG{timestamp}{nextBarcodeNumber:D4}";
-                                safetyCounter++;
-                            } while (!IsBarcodeUnique(barcode) && safetyCounter < 100);
-
-                            if (safetyCounter >= 100)
-                            {
-                                // Fallback to timestamp-based barcode
-                                barcode = $"VEG{DateTime.Now:yyyyMMddHHmmssfff}";
-                            }
-                        }
-
-                        return barcode;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error generating barcode: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // Fallback barcode generation with timestamp
-                return $"VEG{DateTime.Now:yyyyMMddHHmmssfff}";
             }
         }
 

@@ -47,6 +47,8 @@
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column7 = new System.Windows.Forms.DataGridViewButtonColumn();
             this.Column8 = new System.Windows.Forms.DataGridViewButtonColumn();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -57,6 +59,7 @@
             this.lblCurrentUser = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btnPrintBarcodes = new System.Windows.Forms.Button();
             this.panelNav.SuspendLayout();
             this.panelSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).BeginInit();
@@ -211,12 +214,12 @@
             // 
             // txtSearch
             // 
-            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSearch.ForeColor = System.Drawing.SystemColors.ScrollBar;
             this.txtSearch.Location = new System.Drawing.Point(632, 157);
             this.txtSearch.Multiline = true;
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(699, 30);
+            this.txtSearch.Size = new System.Drawing.Size(587, 30);
             this.txtSearch.TabIndex = 15;
             this.txtSearch.Text = "Search";
             this.txtSearch.Click += new System.EventHandler(this.txtSearch_Click);
@@ -234,13 +237,15 @@
             this.Column4,
             this.Column5,
             this.Column6,
+            this.Column9,
+            this.Column10,
             this.Column7,
             this.Column8});
-            this.dgvInventory.Location = new System.Drawing.Point(351, 216);
+            this.dgvInventory.Location = new System.Drawing.Point(231, 199);
             this.dgvInventory.Name = "dgvInventory";
             this.dgvInventory.RowHeadersWidth = 51;
             this.dgvInventory.RowTemplate.Height = 24;
-            this.dgvInventory.Size = new System.Drawing.Size(1051, 673);
+            this.dgvInventory.Size = new System.Drawing.Size(1251, 673);
             this.dgvInventory.TabIndex = 17;
             this.dgvInventory.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvInventory_CellContentClick);
             // 
@@ -286,6 +291,20 @@
             this.Column6.Name = "Column6";
             this.Column6.Width = 125;
             // 
+            // Column9
+            // 
+            this.Column9.HeaderText = "Date Delivered";
+            this.Column9.MinimumWidth = 6;
+            this.Column9.Name = "Column9";
+            this.Column9.Width = 125;
+            // 
+            // Column10
+            // 
+            this.Column10.HeaderText = "Supplier";
+            this.Column10.MinimumWidth = 6;
+            this.Column10.Name = "Column10";
+            this.Column10.Width = 125;
+            // 
             // Column7
             // 
             this.Column7.HeaderText = "EDIT";
@@ -316,9 +335,9 @@
             this.panel2.Controls.Add(this.lblTime);
             this.panel2.Controls.Add(this.lblCurrentUser);
             this.panel2.Controls.Add(this.label1);
-            this.panel2.Location = new System.Drawing.Point(199, 1);
+            this.panel2.Location = new System.Drawing.Point(200, 1);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1301, 103);
+            this.panel2.Size = new System.Drawing.Size(1300, 103);
             this.panel2.TabIndex = 47;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint_1);
             // 
@@ -389,12 +408,27 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // btnPrintBarcodes
+            // 
+            this.btnPrintBarcodes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.btnPrintBarcodes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPrintBarcodes.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPrintBarcodes.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnPrintBarcodes.Location = new System.Drawing.Point(1236, 150);
+            this.btnPrintBarcodes.Name = "btnPrintBarcodes";
+            this.btnPrintBarcodes.Size = new System.Drawing.Size(246, 43);
+            this.btnPrintBarcodes.TabIndex = 48;
+            this.btnPrintBarcodes.Text = "Print All Barcode";
+            this.btnPrintBarcodes.UseVisualStyleBackColor = false;
+            this.btnPrintBarcodes.Click += new System.EventHandler(this.btnPrintBarcodes_Click);
+            // 
             // InventoryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1500, 910);
+            this.Controls.Add(this.btnPrintBarcodes);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.dgvInventory);
@@ -440,15 +474,18 @@
         private System.Windows.Forms.Label lblCurrentUser;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
         private System.Windows.Forms.DataGridViewButtonColumn Column7;
         private System.Windows.Forms.DataGridViewButtonColumn Column8;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button btnPrintBarcodes;
     }
 }
 

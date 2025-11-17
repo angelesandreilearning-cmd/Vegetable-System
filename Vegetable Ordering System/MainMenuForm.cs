@@ -54,13 +54,18 @@ namespace Vegetable_Ordering_System
             RoundPanel(panelStocks, 20);
             RoundPanel(panelTopSelling, 20);
             RoundPanel(panelDailyOrders, 20);
-           
+
             // Load dashboard data and initialize chart
             LoadDashboardData();
             InitializeChart();
+            InitializeWeeklySalesChart(); // ADD THIS LINE
             LoadDailyOrdersChart();
             LoadTopVegetablesChart();
-        
+            LoadWeeklySalesChart(); // ADD THIS LINE
+
+            // Load weekly summary
+            LoadWeeklySummary();
+
         }
         private string GetSeasonalMessage()
         {
@@ -141,27 +146,53 @@ namespace Vegetable_Ordering_System
 
             return monthlyData;
         }
-    
+
         private void LoadDashboardData()
         {
             try
             {
                 var dashboardData = GetDashboardData();
 
-              
+                // MAIN VALUES
                 lblOrdersToday.Text = dashboardData.OrdersToday.ToString();
                 lblTotalSales.Text = $"₱{dashboardData.TotalSalesToday:N2}";
                 lblTopSelling.Text = dashboardData.TopSellingVegetable;
                 lblLowStock.Text = dashboardData.LowStockCount.ToString();
 
-               
+                // ---- TREND INDICATORS ----
+                lblOrdersTrend.Text = GetTrend(
+                    dashboardData.OrdersToday,
+                    dashboardData.OrdersYesterday
+                );
+
+                lblSalesTrend.Text = GetTrend(
+                    dashboardData.TotalSalesToday,
+                    dashboardData.TotalSalesYesterday
+                );
+
+                // ----- SET COLORS -----
+                lblOrdersTrend.ForeColor =
+                    lblOrdersTrend.Text.Contains("▲") ? Color.Green :
+                    lblOrdersTrend.Text.Contains("▼") ? Color.Red :
+                    Color.Gray;
+
+                lblSalesTrend.ForeColor =
+                    lblSalesTrend.Text.Contains("▲") ? Color.Green :
+                    lblSalesTrend.Text.Contains("▼") ? Color.Red :
+                    Color.Gray;
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading dashboard data: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"Error loading dashboard data: {ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
+
         public class SeasonalImpact
         {
             public string Season { get; set; }
@@ -390,10 +421,17 @@ namespace Vegetable_Ordering_System
         // Data Models
         public class DashboardData
         {
+
             public int OrdersToday { get; set; }
+            public int OrdersYesterday { get; set; }
+
             public decimal TotalSalesToday { get; set; }
+            public decimal TotalSalesYesterday { get; set; }
+
             public string TopSellingVegetable { get; set; }
             public string LowStockCount { get; set; }
+
+
         }
 
         public class DailyOrderData
@@ -440,6 +478,22 @@ namespace Vegetable_Ordering_System
                     object result = cmd.ExecuteScalar();
                     data.TopSellingVegetable = result?.ToString() ?? "No sales today";
                 }
+                string ordersYesterdayQuery =
+    "SELECT COUNT(*) FROM tbl_Sales WHERE CAST(OrderDate AS DATE) = CAST(DATEADD(day, -1, GETDATE()) AS DATE)";
+
+                using (SqlCommand cmd = new SqlCommand(ordersYesterdayQuery, con))
+                {
+                    data.OrdersYesterday = (int)cmd.ExecuteScalar();
+                }
+
+                string salesYesterdayQuery =
+    "SELECT ISNULL(SUM(TotalAmount), 0) FROM tbl_Sales WHERE CAST(OrderDate AS DATE) = CAST(DATEADD(day, -1, GETDATE()) AS DATE)";
+
+                using (SqlCommand cmd = new SqlCommand(salesYesterdayQuery, con))
+                {
+                    data.TotalSalesYesterday = (decimal)cmd.ExecuteScalar();
+                }
+
 
                 // Low Stock Count
                 string lowStockQuery = @"
@@ -724,6 +778,261 @@ namespace Vegetable_Ordering_System
                 this.Close();
             }
         }
+        private string GetTrend(decimal today, decimal yesterday)
+        {
+            if (yesterday == 0 && today > 0)
+                return "▲ 100%";
+
+            if (yesterday == 0 && today == 0)
+                return "-";
+
+            decimal change = ((today - yesterday) / yesterday) * 100;
+
+            if (change > 0)
+                return $"▲ {change:N0}%";
+            else if (change < 0)
+                return $"▼ {Math.Abs(change):N0}%";
+            else
+                return "No change";
+        }
+
+        public class WeeklySalesData
+        {
+            public string DayOfWeek { get; set; }
+            public string DateRange { get; set; }
+            public decimal TotalSales { get; set; }
+            public int OrderCount { get; set; }
+        }
+
+        private List<WeeklySalesData> GetWeeklySalesData()
+        {
+            var weeklyData = new List<WeeklySalesData>();
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+
+                string query = @"
+            SELECT 
+                DATEPART(WEEKDAY, OrderDate) AS DayNumber,
+                DATENAME(WEEKDAY, OrderDate) AS DayName,
+                CAST(MIN(OrderDate) AS DATE) AS StartDate,
+                CAST(MAX(OrderDate) AS DATE) AS EndDate,
+                ISNULL(SUM(TotalAmount), 0) AS TotalSales,
+                COUNT(*) AS OrderCount
+            FROM tbl_Sales 
+            WHERE OrderDate >= DATEADD(DAY, -7, GETDATE())
+            GROUP BY DATEPART(WEEKDAY, OrderDate), DATENAME(WEEKDAY, OrderDate)
+            ORDER BY DATEPART(WEEKDAY, OrderDate)";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        weeklyData.Add(new WeeklySalesData
+                        {
+                            DayOfWeek = reader["DayName"].ToString(),
+                            DateRange = $"{Convert.ToDateTime(reader["StartDate"]):MM/dd} - {Convert.ToDateTime(reader["EndDate"]):MM/dd}",
+                            TotalSales = Convert.ToDecimal(reader["TotalSales"]),
+                            OrderCount = Convert.ToInt32(reader["OrderCount"])
+                        });
+                    }
+                }
+
+                // Fill in missing days with zero values
+                string[] allDays = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+
+                foreach (string day in allDays)
+                {
+                    if (!weeklyData.Any(w => w.DayOfWeek.Equals(day, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        weeklyData.Add(new WeeklySalesData
+                        {
+                            DayOfWeek = day,
+                            DateRange = "No data",
+                            TotalSales = 0,
+                            OrderCount = 0
+                        });
+                    }
+                }
+
+                // Sort by day of week (Sunday = 1, Monday = 2, etc.)
+                weeklyData = weeklyData.OrderBy(w => Array.IndexOf(allDays, w.DayOfWeek)).ToList();
+            }
+
+            return weeklyData;
+        }
+
+        private void InitializeWeeklySalesChart()
+        {
+            try
+            {
+                if (chartWeeklySales == null) return;
+
+                // Clear existing series and titles
+                chartWeeklySales.Series.Clear();
+                chartWeeklySales.Titles.Clear();
+                chartWeeklySales.ChartAreas.Clear();
+                chartWeeklySales.Legends.Clear();
+
+                // Create chart area
+                ChartArea chartArea = new ChartArea();
+                chartArea.AxisX.MajorGrid.Enabled = false;
+                chartArea.AxisY.MajorGrid.Enabled = false;
+                chartArea.AxisX.LabelStyle.Angle = -45;
+                chartArea.AxisX.Interval = 1;
+                chartArea.AxisY.Title = "Sales (₱)";
+                chartArea.AxisX.Title = "Day of Week";
+                chartArea.AxisY.TitleFont = new Font("Arial", 9, FontStyle.Bold);
+                chartArea.AxisX.TitleFont = new Font("Arial", 9, FontStyle.Bold);
+                chartWeeklySales.ChartAreas.Add(chartArea);
+
+                // Add title
+                Title title = new Title("Weekly Sales Trend");
+                title.Font = new Font("Arial", 10, FontStyle.Bold);
+                title.ForeColor = Color.FromArgb(0, 100, 0);
+                chartWeeklySales.Titles.Add(title);
+
+                // Create series for sales
+                Series salesSeries = new Series("Sales");
+                salesSeries.ChartType = SeriesChartType.Column;
+                salesSeries.Color = Color.FromArgb(76, 175, 80); 
+                salesSeries.IsValueShownAsLabel = true;
+                salesSeries.LabelFormat = "₱#,##0";
+                salesSeries.LabelForeColor = Color.White;
+                salesSeries.Font = new Font("Arial", 8, FontStyle.Bold);
+                salesSeries.YAxisType = AxisType.Primary;
+
+                // Create series for order count (line)
+                Series ordersSeries = new Series("Orders");
+                ordersSeries.ChartType = SeriesChartType.Line;
+                ordersSeries.Color = Color.FromArgb(255, 152, 0); 
+                ordersSeries.IsValueShownAsLabel = true;
+                ordersSeries.LabelForeColor = Color.DarkRed;
+                ordersSeries.Font = new Font("Arial", 8, FontStyle.Bold);
+                ordersSeries.YAxisType = AxisType.Secondary;
+                ordersSeries.BorderWidth = 3;
+
+                // Add series to chart
+                chartWeeklySales.Series.Add(salesSeries);
+                chartWeeklySales.Series.Add(ordersSeries);
+
+                // Configure secondary Y axis for order count
+                chartArea.AxisY2.Enabled = AxisEnabled.True;
+                chartArea.AxisY2.MajorGrid.Enabled = false;
+                chartArea.AxisY2.Title = "No. Orders";
+                chartArea.AxisY2.TitleFont = new Font("Arial", 9, FontStyle.Bold);
+
+                // Add legend
+                Legend legend = new Legend();
+                legend.Docking = Docking.Top;
+                legend.Alignment = StringAlignment.Center;
+                legend.Font = new Font("Arial", 9, FontStyle.Bold);
+                chartWeeklySales.Legends.Add(legend);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing weekly sales chart: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadWeeklySalesChart()
+        {
+            try
+            {
+                if (chartWeeklySales == null || chartWeeklySales.IsDisposed) return;
+
+                var weeklyData = GetWeeklySalesData();
+
+                // Clear existing data
+                chartWeeklySales.Series["Sales"].Points.Clear();
+                chartWeeklySales.Series["Orders"].Points.Clear();
+
+                // Add data points
+                foreach (var data in weeklyData)
+                {
+                    // Add sales data (primary Y-axis) - CHANGED TO GREEN
+                    DataPoint salesPoint = new DataPoint();
+                    salesPoint.SetValueXY(data.DayOfWeek, (double)data.TotalSales);
+                    salesPoint.Color = Color.FromArgb(76, 175, 80); // Fresh green color
+                    salesPoint.LabelToolTip = $"₱{data.TotalSales:N2}\n{data.DateRange}";
+                    chartWeeklySales.Series["Sales"].Points.Add(salesPoint);
+
+                    // Add order count data (secondary Y-axis)
+                    DataPoint ordersPoint = new DataPoint();
+                    ordersPoint.SetValueXY(data.DayOfWeek, data.OrderCount);
+                    ordersPoint.Color = Color.FromArgb(255, 152, 0); // Keep orange for orders line
+                    ordersPoint.LabelToolTip = $"{data.OrderCount} orders\n{data.DateRange}";
+                    chartWeeklySales.Series["Orders"].Points.Add(ordersPoint);
+                }
+
+                // Customize data point labels
+                foreach (DataPoint point in chartWeeklySales.Series["Sales"].Points)
+                {
+                    point.Label = $"₱{point.YValues[0]:#,##0}";
+                }
+
+                foreach (DataPoint point in chartWeeklySales.Series["Orders"].Points)
+                {
+                    point.Label = $"{point.YValues[0]}";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading weekly sales chart: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private (decimal TotalWeeklySales, int TotalWeeklyOrders, decimal AverageDailySales) GetWeeklySummary()
+        {
+            decimal totalSales = 0;
+            int totalOrders = 0;
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+
+                string query = @"
+            SELECT 
+                ISNULL(SUM(TotalAmount), 0) AS TotalSales,
+                COUNT(*) AS TotalOrders
+            FROM tbl_Sales 
+            WHERE OrderDate >= DATEADD(DAY, -7, GETDATE())";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        totalSales = Convert.ToDecimal(reader["TotalSales"]);
+                        totalOrders = Convert.ToInt32(reader["TotalOrders"]);
+                    }
+                }
+            }
+
+            decimal averageDailySales = totalOrders > 0 ? totalSales / 7 : 0;
+
+            return (totalSales, totalOrders, averageDailySales);
+        }
+
+        private void LoadWeeklySummary()
+        {
+            try
+            {
+                var (totalSales, totalOrders, averageDailySales) = GetWeeklySummary();
+
+                
+
+                Console.WriteLine($"Weekly Summary - Sales: ₱{totalSales:N2}, Orders: {totalOrders}, Avg Daily: ₱{averageDailySales:N2}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading weekly summary: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         private void lblDate_Click(object sender, EventArgs e)
         {
@@ -736,6 +1045,16 @@ namespace Vegetable_Ordering_System
         }
 
         private void timer2_Tick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chartWeeklySales_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTotalSales_Click(object sender, EventArgs e)
         {
 
         }
