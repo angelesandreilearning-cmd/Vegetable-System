@@ -383,7 +383,7 @@ namespace Vegetable_Ordering_System
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(
-                    "SELECT ProductID, ProductName, Category, Stock, Price, DateDelivered, Supplier FROM tbl_Products " +
+                    "SELECT ProductID, ProductName, Category, Stock, Price, Unit, DateDelivered, Supplier FROM tbl_Products " +
                     "WHERE ProductName LIKE @Search OR Category LIKE @Search OR Supplier LIKE @Search",
                     connection);
                 command.Parameters.AddWithValue("@Search", "%" + searchText + "%");
@@ -399,18 +399,16 @@ namespace Vegetable_Ordering_System
                         reader["Category"].ToString(),
                         reader["Stock"].ToString(),
                         $"₱{Convert.ToDecimal(reader["Price"]):N2}",
-                        "kg",
+                        reader["Unit"]?.ToString() ?? "kg",
                         reader["DateDelivered"] == DBNull.Value ? "" : Convert.ToDateTime(reader["DateDelivered"]).ToString("MM/dd/yyyy"),
                         reader["Supplier"]?.ToString() ?? "",
                         "EDIT",
                         "DELETE"
                     );
                 }
-                connection.Close();
             }
             txtSearch.ForeColor = Color.Black;
         }
-
         private void panel2_Paint_1(object sender, PaintEventArgs e) { }
 
         private void RoundCorners(Button btn, int radius)
@@ -448,7 +446,7 @@ namespace Vegetable_Ordering_System
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(
-                    "SELECT ProductID, ProductName, Category, Stock, Price, DateDelivered, Supplier FROM tbl_Products",
+                    "SELECT ProductID, ProductName, Category, Stock, Price, Unit, DateDelivered, Supplier FROM tbl_Products",
                     connection);
                 SqlDataReader reader = command.ExecuteReader();
 
@@ -461,14 +459,13 @@ namespace Vegetable_Ordering_System
                         reader["Category"].ToString(),
                         reader["Stock"].ToString(),
                         $"₱{Convert.ToDecimal(reader["Price"]):N2}",
-                        "kg",
+                        reader["Unit"]?.ToString() ?? "kg", // Get from database, default to "kg"
                         reader["DateDelivered"] == DBNull.Value ? "" : Convert.ToDateTime(reader["DateDelivered"]).ToString("MM/dd/yyyy"),
                         reader["Supplier"]?.ToString() ?? "",
                         "EDIT",
                         "DELETE"
                     );
                 }
-                connection.Close();
             }
         }
 
@@ -486,34 +483,41 @@ namespace Vegetable_Ordering_System
             addStockForm.ShowDialog();
         }
 
-        private void dgvInventory_CellContentClick(object sender, DataGridViewCellEventArgs e)
+    
+        private void EditProduct(int productID)
         {
-            if (e.RowIndex >= 0)
+            try
             {
-                if (e.ColumnIndex == 8)
-                {
-                    string productId = dgvInventory.Rows[e.RowIndex].Cells[0].Value.ToString();
-                    string productName = dgvInventory.Rows[e.RowIndex].Cells[1].Value.ToString();
-                    string category = dgvInventory.Rows[e.RowIndex].Cells[2].Value.ToString();
-                    string stock = dgvInventory.Rows[e.RowIndex].Cells[3].Value.ToString();
-                    string price = dgvInventory.Rows[e.RowIndex].Cells[4].Value.ToString();
-                    string dateDelivered = dgvInventory.Rows[e.RowIndex].Cells[6].Value?.ToString();
-                    string supplier = dgvInventory.Rows[e.RowIndex].Cells[7].Value?.ToString();
+                // Open the edit form
+                EditStock editForm = new EditStock(this, productID);
+                editForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error editing product: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void DeleteProductConfirmation(int productID, string productName)
+        {
+            try
+            {
+                DialogResult result = MessageBox.Show(
+                    $"Are you sure you want to PERMANENTLY delete '{productName}'?\n\nThis action cannot be undone!",
+                    "CONFIRM PERMANENT DELETE",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2);
 
-                    MessageBox.Show($"Edit product: {productName}\nPrice: {price}\nStock: {stock}\nDate Delivered: {dateDelivered}\nSupplier: {supplier}", "Edit Product");
-                }
-                else if (e.ColumnIndex == 9)
+                if (result == DialogResult.Yes)
                 {
-                    string productId = dgvInventory.Rows[e.RowIndex].Cells[0].Value.ToString();
-                    string productName = dgvInventory.Rows[e.RowIndex].Cells[1].Value.ToString();
-
-                    if (MessageBox.Show($"Are you sure you want to PERMANENTLY delete {productName}?\n\nThis action cannot be undone.",
-                        "Confirm Permanent Delete",
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                    {
-                        DeleteProduct(Convert.ToInt32(productId));
-                    }
+                    DeleteProduct(productID);
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error confirming deletion: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -566,5 +570,74 @@ namespace Vegetable_Ordering_System
         }
 
         private void txtSearch_KeyPress(object sender, KeyPressEventArgs e) { }
+
+        private void dgvInventory_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvInventory.Rows.Count)
+                return;
+
+            try
+            {
+                string columnName = dgvInventory.Columns[e.ColumnIndex].Name;
+                Console.WriteLine($"CellContentClick - Row: {e.RowIndex}, Column: {e.ColumnIndex} ('{columnName}')");
+
+                // Check if we have valid product data
+                if (dgvInventory.Rows[e.RowIndex].Cells[0].Value == null)
+                    return;
+
+                int productID = Convert.ToInt32(dgvInventory.Rows[e.RowIndex].Cells[0].Value);
+                string productName = dgvInventory.Rows[e.RowIndex].Cells[1].Value?.ToString() ?? "Unknown";
+
+                // Use column names instead of header text
+                if (columnName == "Column7") // EDIT column name
+                {
+                    Console.WriteLine($"EDIT button clicked for: {productName} (ID: {productID})");
+                    EditProduct(productID);
+                }
+                else if (columnName == "Column8") // DELETE column name  
+                {
+                    Console.WriteLine($"DELETE button clicked for: {productName} (ID: {productID})");
+                    DeleteProductConfirmation(productID, productName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error handling button click: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"CellContentClick Error: {ex.Message}");
+            }
+        }
+            private void EditProductRow(int rowIndex)
+        {
+            try
+            {
+                if (rowIndex < 0 || rowIndex >= dgvInventory.Rows.Count)
+                {
+                    MessageBox.Show("Invalid row selected.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (dgvInventory.Rows[rowIndex].Cells[0].Value == null)
+                {
+                    MessageBox.Show("Invalid product selected.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int productID = Convert.ToInt32(dgvInventory.Rows[rowIndex].Cells[0].Value);
+                string productName = dgvInventory.Rows[rowIndex].Cells[1].Value?.ToString() ?? "Unknown";
+
+                // Open the edit form
+                EditStock editForm = new EditStock(this, productID);
+                editForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error editing product: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
     }
 }

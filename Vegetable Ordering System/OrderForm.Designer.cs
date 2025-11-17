@@ -48,14 +48,14 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.btnPrintReceipt = new System.Windows.Forms.Button();
+            this.btnPreviewOrder = new System.Windows.Forms.Button();
             this.btnPlaceOrder = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtChange = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtTotalPayment = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
+            this.lblOrderNumber = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.lblDate1 = new System.Windows.Forms.Label();
             this.lblTime1 = new System.Windows.Forms.Label();
@@ -236,7 +236,7 @@
             this.label8.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
             this.label8.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label8.Location = new System.Drawing.Point(1224, 28);
+            this.label8.Location = new System.Drawing.Point(1209, 28);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(64, 23);
             this.label8.TabIndex = 47;
@@ -313,7 +313,7 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panel3.Controls.Add(this.btnPrintReceipt);
+            this.panel3.Controls.Add(this.btnPreviewOrder);
             this.panel3.Controls.Add(this.btnPlaceOrder);
             this.panel3.Controls.Add(this.groupBox1);
             this.panel3.Controls.Add(this.lblTotal);
@@ -324,19 +324,19 @@
             this.panel3.Size = new System.Drawing.Size(565, 714);
             this.panel3.TabIndex = 44;
             // 
-            // btnPrintReceipt
+            // btnPreviewOrder
             // 
-            this.btnPrintReceipt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnPrintReceipt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPrintReceipt.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPrintReceipt.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnPrintReceipt.Location = new System.Drawing.Point(15, 648);
-            this.btnPrintReceipt.Name = "btnPrintReceipt";
-            this.btnPrintReceipt.Size = new System.Drawing.Size(177, 45);
-            this.btnPrintReceipt.TabIndex = 47;
-            this.btnPrintReceipt.Text = "Print Receipt ";
-            this.btnPrintReceipt.UseVisualStyleBackColor = false;
-            this.btnPrintReceipt.Click += new System.EventHandler(this.btnPrintReceipt_Click);
+            this.btnPreviewOrder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.btnPreviewOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPreviewOrder.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPreviewOrder.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnPreviewOrder.Location = new System.Drawing.Point(15, 648);
+            this.btnPreviewOrder.Name = "btnPreviewOrder";
+            this.btnPreviewOrder.Size = new System.Drawing.Size(177, 45);
+            this.btnPreviewOrder.TabIndex = 47;
+            this.btnPreviewOrder.Text = "Preview Order";
+            this.btnPreviewOrder.UseVisualStyleBackColor = false;
+            this.btnPreviewOrder.Click += new System.EventHandler(this.btnPreviewOrder_Click);
             // 
             // btnPlaceOrder
             // 
@@ -358,7 +358,7 @@
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.txtTotalPayment);
-            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.lblOrderNumber);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.lblDate1);
             this.groupBox1.Controls.Add(this.lblTime1);
@@ -412,16 +412,17 @@
             this.txtTotalPayment.Size = new System.Drawing.Size(132, 30);
             this.txtTotalPayment.TabIndex = 51;
             // 
-            // label11
+            // lblOrderNumber
             // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label11.Location = new System.Drawing.Point(12, 284);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(54, 23);
-            this.label11.TabIndex = 50;
-            this.label11.Text = "#0001";
+            this.lblOrderNumber.AutoSize = true;
+            this.lblOrderNumber.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOrderNumber.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblOrderNumber.Location = new System.Drawing.Point(12, 284);
+            this.lblOrderNumber.Name = "lblOrderNumber";
+            this.lblOrderNumber.Size = new System.Drawing.Size(54, 23);
+            this.lblOrderNumber.TabIndex = 50;
+            this.lblOrderNumber.Text = "#0001";
+            this.lblOrderNumber.Click += new System.EventHandler(this.lblOrderNumber_Click);
             // 
             // label10
             // 
@@ -451,7 +452,7 @@
             this.lblTime1.AutoSize = true;
             this.lblTime1.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTime1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTime1.Location = new System.Drawing.Point(241, 214);
+            this.lblTime1.Location = new System.Drawing.Point(351, 214);
             this.lblTime1.Name = "lblTime1";
             this.lblTime1.Size = new System.Drawing.Size(99, 23);
             this.lblTime1.TabIndex = 41;
@@ -666,7 +667,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Button btnPlaceOrder;
-        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label lblOrderNumber;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label lblDate1;
         private System.Windows.Forms.Label lblTime1;
@@ -682,7 +683,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtBarcode;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Button btnPrintReceipt;
+        private System.Windows.Forms.Button btnPreviewOrder;
     }
 }
 

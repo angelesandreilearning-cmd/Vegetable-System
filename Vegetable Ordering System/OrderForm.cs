@@ -58,116 +58,307 @@ namespace Vegetable_Ordering_System
         {
             printDocument = new System.Drawing.Printing.PrintDocument();
             printDocument.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(PrintDocument_PrintPage);
+
+            printDocument.DefaultPageSettings.PaperSize = new PaperSize("Short Bond", 850, 1100);
+            printDocument.DefaultPageSettings.Margins = new Margins(5, 5, 5, 5);
         }
         private void PrintDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             if (currentOrder == null) return;
 
             Graphics graphics = e.Graphics;
-            Font titleFont = new Font("Arial", 16, FontStyle.Bold);
-            Font headerFont = new Font("Arial", 12, FontStyle.Bold);
-            Font normalFont = new Font("Arial", 10);
-            Font smallFont = new Font("Arial", 8);
 
-            float yPos = 20;
-            float leftMargin = 10;
-            float rightMargin = e.PageBounds.Width - 10;
+            // Use monospaced font for receipt-like appearance
+            Font companyFont = new Font("Courier New", 12, FontStyle.Bold); // Reduced from 14
+            Font headerFont = new Font("Courier New", 9, FontStyle.Bold);   // Reduced from 10
+            Font normalFont = new Font("Courier New", 8, FontStyle.Regular); // Reduced from 9
+            Font smallFont = new Font("Courier New", 7, FontStyle.Regular);  // Reduced from 8
+            Font totalFont = new Font("Courier New", 9, FontStyle.Bold);     // Reduced from 10
 
-            // Company Header
-            graphics.DrawString("VEGETABLE ORDERING SYSTEM", titleFont, Brushes.Black, leftMargin, yPos);
-            yPos += 30;
+            // Receipt width - make it smaller to fit thermal paper
+            int receiptWidth = 260; // Reduced from 280
+            float leftMargin = 5;   // Reduced from 10
+            float rightMargin = receiptWidth - 5;
+            float yPos = 10;        // Start a bit higher
 
-            // Order Information
-            graphics.DrawString($"Order ID: {currentOrder.OrderId}", headerFont, Brushes.Black, leftMargin, yPos);
-            yPos += 20;
-            graphics.DrawString($"Customer: {currentOrder.CustomerName}", normalFont, Brushes.Black, leftMargin, yPos);
-            yPos += 15;
-            graphics.DrawString($"Date: {currentOrder.DateDisplay}", normalFont, Brushes.Black, leftMargin, yPos);
-            yPos += 15;
-            graphics.DrawString($"Time: {currentOrder.TimeDisplay}", normalFont, Brushes.Black, leftMargin, yPos);
-            yPos += 15;
+            // Center the receipt on the page
+            float pageCenter = e.PageBounds.Width / 2;
+            float receiptCenter = receiptWidth / 2;
+            float xOffset = pageCenter - receiptCenter;
 
-            // Payment Information
-            graphics.DrawString($"Payment: {currentOrder.PaymentType}", normalFont, Brushes.Black, leftMargin, yPos);
-            yPos += 15;
+            // Company Header - Centered
+            string companyName = "VEGETABLE ORDERING SYSTEM";
+            SizeF companySize = graphics.MeasureString(companyName, companyFont);
+            graphics.DrawString(companyName, companyFont, Brushes.Black,
+                xOffset + (receiptWidth - companySize.Width) / 2, yPos);
+            yPos += companySize.Height + 5;
 
-            // Add GCash reference number if payment is GCash
+            // Address/Contact info
+            string address = "Fresh Vegetables Market";
+            string contact = "Contact: 0912-345-6789";
+            SizeF addressSize = graphics.MeasureString(address, smallFont);
+            SizeF contactSize = graphics.MeasureString(contact, smallFont);
+
+            graphics.DrawString(address, smallFont, Brushes.Black,
+                xOffset + (receiptWidth - addressSize.Width) / 2, yPos);
+            yPos += addressSize.Height + 3;
+            graphics.DrawString(contact, smallFont, Brushes.Black,
+                xOffset + (receiptWidth - contactSize.Width) / 2, yPos);
+            yPos += contactSize.Height + 8;
+
+            // Separator line
+            graphics.DrawLine(new Pen(Color.Black, 1), xOffset + leftMargin, yPos, xOffset + rightMargin, yPos);
+            yPos += 8;
+
+            // Order Information in two columns
+            float col1 = xOffset + leftMargin;
+            float col2 = xOffset + receiptWidth / 2;
+
+            graphics.DrawString("ORDER RECEIPT", headerFont, Brushes.Black, col1, yPos);
+            yPos += headerFont.Height + 5;
+
+            // Order ID
+            graphics.DrawString($"Order ID:", normalFont, Brushes.Black, col1, yPos);
+            graphics.DrawString($"{currentOrder.OrderId}", headerFont, Brushes.Black, col2, yPos);
+            yPos += normalFont.Height + 3;
+
+            // Date - FIXED: Use shorter format to prevent overflow
+            string shortDate = FormatDateForReceipt(currentOrder.DateDisplay);
+            graphics.DrawString($"Date:", normalFont, Brushes.Black, col1, yPos);
+            graphics.DrawString($"{shortDate}", normalFont, Brushes.Black, col2, yPos);
+            yPos += normalFont.Height + 3;
+
+            // Time
+            graphics.DrawString($"Time:", normalFont, Brushes.Black, col1, yPos);
+            graphics.DrawString($"{currentOrder.TimeDisplay}", normalFont, Brushes.Black, col2, yPos);
+            yPos += normalFont.Height + 3;
+
+            // Customer
+            graphics.DrawString($"Customer:", normalFont, Brushes.Black, col1, yPos);
+            string shortCustomer = currentOrder.CustomerName.Length > 15 ?
+                currentOrder.CustomerName.Substring(0, 12) + "..." : currentOrder.CustomerName;
+            graphics.DrawString($"{shortCustomer}", normalFont, Brushes.Black, col2, yPos);
+            yPos += normalFont.Height + 3;
+
+            // Payment
+            graphics.DrawString($"Payment:", normalFont, Brushes.Black, col1, yPos);
+            graphics.DrawString($"{currentOrder.PaymentType}", normalFont, Brushes.Black, col2, yPos);
+            yPos += normalFont.Height + 3;
+
+            // GCash reference if applicable - FIXED LAYOUT
             if (currentOrder.PaymentType == "GCash")
             {
-                string gcashRef = GenerateGCashReference();
-                graphics.DrawString($"GCash Ref: {gcashRef}", normalFont, Brushes.Black, leftMargin, yPos);
-                yPos += 15;
+                string gcashRef = GetGCashReference(currentOrder.OrderId);
+                if (!string.IsNullOrEmpty(gcashRef))
+                {
+                    // Truncate GCash reference if too long
+                    string displayRef = gcashRef.Length > 16 ? gcashRef.Substring(0, 13) + "..." : gcashRef;
+
+                    graphics.DrawString($"GCash Ref:", normalFont, Brushes.Black, col1, yPos);
+                    graphics.DrawString($"{displayRef}", smallFont, Brushes.Black, col2, yPos); // Use smaller font
+                    yPos += normalFont.Height + 3;
+                }
             }
 
+            yPos += 3;
+
+            // Items separator
+            graphics.DrawLine(new Pen(Color.Black, 1), xOffset + leftMargin, yPos, xOffset + rightMargin, yPos);
+            yPos += 8;
+
+            // Column headers for items - ADJUSTED POSITIONS
+            graphics.DrawString("ITEM", headerFont, Brushes.Black, xOffset + leftMargin, yPos);
+            graphics.DrawString("QTY", headerFont, Brushes.Black, xOffset + leftMargin + 110, yPos); // Adjusted
+            graphics.DrawString("AMOUNT", headerFont, Brushes.Black, xOffset + leftMargin + 160, yPos); // Adjusted
+            yPos += headerFont.Height + 3;
+
+            // Line under headers
+            graphics.DrawLine(new Pen(Color.Black, 1), xOffset + leftMargin, yPos, xOffset + rightMargin, yPos);
             yPos += 5;
 
-            // Draw line separator - MOVED OUTSIDE GCASH CONDITION
-            graphics.DrawLine(new Pen(Color.Black, 1), leftMargin, yPos, rightMargin, yPos);
-            yPos += 10;
-
-            // Column Headers - MOVED OUTSIDE GCASH CONDITION
-            graphics.DrawString("Product", headerFont, Brushes.Black, leftMargin, yPos);
-            graphics.DrawString("Qty", headerFont, Brushes.Black, leftMargin + 150, yPos);
-            graphics.DrawString("Price", headerFont, Brushes.Black, leftMargin + 200, yPos);
-            graphics.DrawString("Total", headerFont, Brushes.Black, rightMargin - 80, yPos);
-            yPos += 20;
-
-            // Draw line under headers - MOVED OUTSIDE GCASH CONDITION
-            graphics.DrawLine(new Pen(Color.Black, 1), leftMargin, yPos, rightMargin, yPos);
-            yPos += 5;
-
-            // Order Items - MOVED OUTSIDE GCASH CONDITION
+            // Order Items
             foreach (var item in currentOrder.OrderItems)
             {
-                if (yPos > e.PageBounds.Height - 100)
+                // Check if we need a new page
+                if (yPos > e.PageBounds.Height - 120) // Increased buffer
                 {
                     e.HasMorePages = true;
                     return;
                 }
 
-                graphics.DrawString(item.ProductName, normalFont, Brushes.Black, leftMargin, yPos);
-                graphics.DrawString($"{item.Quantity} kg", normalFont, Brushes.Black, leftMargin + 150, yPos);
-                graphics.DrawString($"₱{item.UnitPrice:N2}", normalFont, Brushes.Black, leftMargin + 200, yPos);
-                graphics.DrawString($"₱{item.TotalPrice:N2}", normalFont, Brushes.Black, rightMargin - 80, yPos);
-                yPos += 15;
+                // Product name (truncate if too long)
+                string productName = item.ProductName;
+                if (productName.Length > 18) // Reduced from 20
+                {
+                    productName = productName.Substring(0, 15) + "...";
+                }
+
+                graphics.DrawString(productName, normalFont, Brushes.Black, xOffset + leftMargin, yPos);
+                graphics.DrawString($"{item.Quantity}kg", normalFont, Brushes.Black, xOffset + leftMargin + 110, yPos);
+                graphics.DrawString($"₱{item.TotalPrice:N2}", normalFont, Brushes.Black, xOffset + leftMargin + 160, yPos);
+                yPos += normalFont.Height + 2;
+
+                // Show unit price below product name
+                graphics.DrawString($"@₱{item.UnitPrice:N2}/kg", smallFont, Brushes.Black, xOffset + leftMargin + 3, yPos);
+                yPos += smallFont.Height + 4; // Reduced spacing
             }
 
-            yPos += 10;
+            yPos += 3;
 
-            // Draw line before total - MOVED OUTSIDE GCASH CONDITION
-            graphics.DrawLine(new Pen(Color.Black, 2), leftMargin, yPos, rightMargin, yPos);
-            yPos += 15;
+            // Total separator (double line)
+            graphics.DrawLine(new Pen(Color.Black, 1), xOffset + leftMargin, yPos, xOffset + rightMargin, yPos);
+            yPos += 2;
+            graphics.DrawLine(new Pen(Color.Black, 1), xOffset + leftMargin, yPos, xOffset + rightMargin, yPos);
+            yPos += 6;
 
-            // Total Amount - MOVED OUTSIDE GCASH CONDITION
-            graphics.DrawString($"TOTAL AMOUNT: ₱{currentOrder.TotalAmount:N2}",
-                new Font("Arial", 12, FontStyle.Bold), Brushes.Black, rightMargin - 150, yPos);
-            yPos += 30;
+            // Total Amount - ADJUSTED POSITIONS
+            graphics.DrawString("TOTAL:", totalFont, Brushes.Black, xOffset + leftMargin + 110, yPos);
+            graphics.DrawString($"₱{currentOrder.TotalAmount:N2}", totalFont, Brushes.Black, xOffset + leftMargin + 160, yPos);
+            yPos += totalFont.Height + 8;
 
-            // Footer - MOVED OUTSIDE GCASH CONDITION
-            graphics.DrawString("Thank you for your order!", normalFont, Brushes.Black, leftMargin, yPos);
-            yPos += 15;
-            graphics.DrawString($"Processed by: {currentOrder.CreatedBy}", smallFont, Brushes.Black, leftMargin, yPos);
+            // Payment details section
+            graphics.DrawString("PAYMENT DETAILS", headerFont, Brushes.Black, xOffset + leftMargin, yPos);
+            yPos += headerFont.Height + 5;
+
+            if (currentOrder.PaymentType == "Cash")
+            {
+                // Get payment amount from textbox
+                if (decimal.TryParse(txtTotalPayment.Text, out decimal payment))
+                {
+                    graphics.DrawString("Amount Paid:", normalFont, Brushes.Black, xOffset + leftMargin, yPos);
+                    graphics.DrawString($"₱{payment:N2}", normalFont, Brushes.Black, xOffset + leftMargin + 160, yPos);
+                    yPos += normalFont.Height + 3;
+
+                    decimal change = payment - currentOrder.TotalAmount;
+                    graphics.DrawString("Change:", normalFont, Brushes.Black, xOffset + leftMargin, yPos);
+                    graphics.DrawString($"₱{change:N2}", normalFont, Brushes.Black, xOffset + leftMargin + 160, yPos);
+                    yPos += normalFont.Height + 8;
+                }
+            }
+            else if (currentOrder.PaymentType == "GCash")
+            {
+                graphics.DrawString("Payment Method:", normalFont, Brushes.Black, xOffset + leftMargin, yPos);
+                graphics.DrawString("GCash", normalFont, Brushes.Black, xOffset + leftMargin + 160, yPos);
+                yPos += normalFont.Height + 3;
+
+                string gcashRef = GetGCashReference(currentOrder.OrderId);
+                if (!string.IsNullOrEmpty(gcashRef))
+                {
+                    string displayRef = gcashRef.Length > 16 ? gcashRef.Substring(0, 13) + "..." : gcashRef;
+                    graphics.DrawString("Reference No:", normalFont, Brushes.Black, xOffset + leftMargin, yPos);
+                    graphics.DrawString($"{displayRef}", smallFont, Brushes.Black, xOffset + leftMargin + 160, yPos);
+                    yPos += normalFont.Height + 3;
+                }
+
+                graphics.DrawString("Status:", normalFont, Brushes.Black, xOffset + leftMargin, yPos);
+                graphics.DrawString("PAID", headerFont, Brushes.Black, xOffset + leftMargin + 160, yPos);
+                yPos += normalFont.Height + 8;
+            }
+
+            // Payment separator
+            graphics.DrawLine(new Pen(Color.Black, 1), xOffset + leftMargin, yPos, xOffset + rightMargin, yPos);
+            yPos += 8;
+
+            // Thank you message
+            string thankYou = "Thank you for your order!";
+            SizeF thankYouSize = graphics.MeasureString(thankYou, normalFont);
+            graphics.DrawString(thankYou, normalFont, Brushes.Black,
+                xOffset + (receiptWidth - thankYouSize.Width) / 2, yPos);
+            yPos += thankYouSize.Height + 5;
+
+            // Processed by
+            graphics.DrawString($"Processed by: {currentOrder.CreatedBy}", smallFont, Brushes.Black,
+                xOffset + leftMargin, yPos);
+            yPos += smallFont.Height + 5;
+
+            // Footer separator
+            graphics.DrawLine(new Pen(Color.Black, 1), xOffset + leftMargin, yPos, xOffset + rightMargin, yPos);
+            yPos += 8;
+
+            // Return policy/note
+            string returnPolicy = "Goods sold are not returnable";
+            string visitAgain = "Please visit again!";
+
+            SizeF policySize = graphics.MeasureString(returnPolicy, smallFont);
+            SizeF visitSize = graphics.MeasureString(visitAgain, smallFont);
+
+            graphics.DrawString(returnPolicy, smallFont, Brushes.Black,
+                xOffset + (receiptWidth - policySize.Width) / 2, yPos);
+            yPos += smallFont.Height + 3;
+            graphics.DrawString(visitAgain, smallFont, Brushes.Black,
+                xOffset + (receiptWidth - visitSize.Width) / 2, yPos);
+
+            e.HasMorePages = false;
         }
-        private string GenerateGCashReference()
+
+        // ADD THIS METHOD to format date properly
+        private string FormatDateForReceipt(string originalDate)
         {
-            Random random = new Random();
-            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string randomNum = random.Next(1000, 9999).ToString();
-            return $"GC{timestamp}{randomNum}";
+            try
+            {
+                // Convert "Monday, November 17, 2025" to "Mon, Nov 17, 2025"
+                DateTime date = DateTime.Parse(originalDate);
+                return date.ToString("ddd, MMM dd, yyyy"); // Shorter format
+            }
+            catch
+            {
+                // Fallback: just take first 15 characters if parsing fails
+                return originalDate.Length > 15 ? originalDate.Substring(0, 15) + "..." : originalDate;
+            }
         }
+        private string GetGCashReference(string orderId)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+                    string query = "SELECT GCashReference FROM tbl_Sales WHERE OrderID = @OrderID";
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@OrderID", orderId);
+                        object result = cmd.ExecuteScalar();
+
+                        // Debug output to see what's happening
+                        string reference = result?.ToString() ?? "";
+                        Console.WriteLine($"DEBUG - OrderID: {orderId}, GCashRef: '{reference}'");
+
+                        return reference;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving GCash reference: {ex.Message}");
+                return "";
+            }
+        }
+      
         private void SaveGCashReference(string orderId, string gcashReference)
         {
-            using (SqlConnection con = new SqlConnection(connectionString))
+            try
             {
-                con.Open();
-                string query = "UPDATE tbl_Sales SET GCashReference = @GCashReference WHERE OrderID = @OrderID";
-
-                using (SqlCommand cmd = new SqlCommand(query, con))
+                using (SqlConnection con = new SqlConnection(connectionString))
                 {
-                    cmd.Parameters.AddWithValue("@GCashReference", gcashReference);
-                    cmd.Parameters.AddWithValue("@OrderID", orderId);
-                    cmd.ExecuteNonQuery();
+                    con.Open();
+                    string query = "UPDATE tbl_Sales SET GCashReference = @GCashReference WHERE OrderID = @OrderID";
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@GCashReference", gcashReference);
+                        cmd.Parameters.AddWithValue("@OrderID", orderId);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        Console.WriteLine($"DEBUG - Saved GCashRef: '{gcashReference}' for OrderID: {orderId}, Rows affected: {rowsAffected}");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving GCash reference: {ex.Message}");
+                MessageBox.Show($"Error saving GCash reference: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         public class OrderItem
@@ -1238,6 +1429,7 @@ namespace Vegetable_Ordering_System
         {
             LoadProductsToFlowLayout();
             InitializeOrderItemsTable();
+            InitializeOrderNumberSystem();
 
             if (cmbPaymentType.Items.Count == 0)
             {
@@ -1402,50 +1594,37 @@ namespace Vegetable_Ordering_System
                     return;
                 }
 
-                // NEW VALIDATION: Check if payment is sufficient
-                if (IsChangeNegative())
+                // Validate payment based on payment type
+                string paymentType = GetSelectedPaymentType();
+
+                if (paymentType == "Cash")
                 {
-                    MessageBox.Show("Payment amount is insufficient. Please enter a higher payment amount.",
-                        "Insufficient Payment", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    txtTotalPayment.Focus();
-                    txtTotalPayment.SelectAll();
-                    return;
+                    // Validate cash payment
+                    if (string.IsNullOrWhiteSpace(txtTotalPayment.Text))
+                    {
+                        MessageBox.Show("Please enter payment amount for cash payment.", "Payment Required",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txtTotalPayment.Focus();
+                        return;
+                    }
+
+                    if (IsChangeNegative())
+                    {
+                        MessageBox.Show("Payment amount is insufficient. Please enter a higher payment amount.",
+                            "Insufficient Payment", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txtTotalPayment.Focus();
+                        txtTotalPayment.SelectAll();
+                        return;
+                    }
                 }
+                // For GCash, validation happens in CompleteOrderPlacement
 
                 // Collect order data
                 Order order = CollectOrderData();
                 currentOrder = order; // Store for printing
 
-                // Save to database
-                bool success = SaveOrderToDatabase(order);
-
-                if (success)
-                {
-                    // UPDATE STOCK LEVELS
-                    bool stockUpdated = UpdateStockForOrder(order);
-
-                    if (stockUpdated)
-                    {
-                        // Ask if user wants to print receipt
-                        DialogResult printResult = MessageBox.Show(
-                            $"Order placed successfully!\nOrder ID: {order.OrderId}\n\nDo you want to print the receipt?",
-                            "Success",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Information);
-
-                        if (printResult == DialogResult.Yes)
-                        {
-                            PrintReceipt();
-                        }
-
-                        ResetOrderForm();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Order was saved but stock update failed. Please contact administrator.",
-                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
+                // Save to database and handle payment
+                CompleteOrderPlacement(order);
             }
             catch (Exception ex)
             {
@@ -1793,46 +1972,7 @@ namespace Vegetable_Ordering_System
             }
         }
 
-        private void btnPrintReceipt_Click(object sender, EventArgs e)
-        {
-            if (currentOrder != null)
-            {
-                try
-                {
-                    // Check if printers are available
-                    if (PrinterSettings.InstalledPrinters.Count == 0)
-                    {
-                        MessageBox.Show("No printers are installed on this system. Please install a printer first.",
-                            "No Printer Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-
-                    // Show preview first
-                    PrintPreviewDialog previewDialog = new PrintPreviewDialog();
-                    previewDialog.Document = printDocument;
-                    previewDialog.WindowState = FormWindowState.Maximized;
-
-                    if (previewDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        // ACTUAL PRINTING HAPPENS HERE
-                        printDocument.Print();
-                        MessageBox.Show("Receipt printed successfully!", "Success",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                catch (InvalidPrinterException ex)
-                {
-                    MessageBox.Show($"Printer error: {ex.Message}\n\nPlease check your printer installation.",
-                        "Printer Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error: {ex.Message}",
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-
-            }
+       
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1848,6 +1988,401 @@ namespace Vegetable_Ordering_System
         {
             txtSearch.ForeColor = Color.Black;
             txtSearch.Clear();
+        }
+
+        private void btnPreviewOrder_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Validate required fields first
+                if (string.IsNullOrWhiteSpace(txtCustomer.Text))
+                {
+                    MessageBox.Show("Please enter customer name.", "Validation Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtCustomer.Focus();
+                    return;
+                }
+
+                // Validate customer name format
+                Regex regex = new Regex(@"^[a-zA-Z\s]+$");
+                if (!regex.IsMatch(txtCustomer.Text))
+                {
+                    MessageBox.Show("Please enter only letters and spaces for customer name.",
+                        "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtCustomer.Focus();
+                    return;
+                }
+
+                // Validate order has items
+                if (orderItems.Rows.Count == 0)
+                {
+                    MessageBox.Show("Please add products to the order.", "No Items",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Collect order data for preview
+                Order order = CollectOrderData();
+                currentOrder = order; // Store for preview/printing
+
+                // Show preview
+                ShowOrderPreview(order);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error generating preview: {ex.Message}", "Preview Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void ShowOrderPreview(Order order)
+        {
+            using (OrderPreviewForm previewForm = new OrderPreviewForm(order))
+            {
+                DialogResult result = previewForm.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    // User clicked "Print Receipt" in preview
+                    PrintReceipt();
+
+                    // Ask if they want to place the order after printing
+                    DialogResult placeOrderResult = MessageBox.Show(
+                        "Do you want to place this order now?",
+                        "Place Order",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (placeOrderResult == DialogResult.Yes)
+                    {
+                        CompleteOrderPlacement(order);
+                    }
+                }
+                else
+                {
+                    // User clicked "Back to Edit" - just return to form for editing
+                    MessageBox.Show("You can continue editing your order.",
+                        "Order Preview Closed",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+            }
+        }
+        private void CompleteOrderPlacement(Order order)
+        {
+            try
+            {
+                string gcashReference = null;
+
+                // Handle GCash payment - show reference number dialog FIRST
+                if (order.PaymentType == "GCash")
+                {
+                    gcashReference = ShowGCashReferenceDialog();
+
+                    if (string.IsNullOrEmpty(gcashReference))
+                    {
+                        MessageBox.Show("GCash payment cancelled. Order not placed.", "Payment Cancelled",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return; // Don't proceed with order placement
+                    }
+                }
+
+                // Save to database FIRST
+                bool success = SaveOrderToDatabase(order);
+
+                if (success)
+                {
+                    // NOW save GCash reference to database
+                    if (order.PaymentType == "GCash" && !string.IsNullOrEmpty(gcashReference))
+                    {
+                        SaveGCashReference(order.OrderId, gcashReference);
+
+                        // Update currentOrder for printing
+                        if (currentOrder != null)
+                        {
+                            // Add GCashReference property to Order class or store it temporarily
+                            // For now, we'll ensure the database has it and refresh
+                        }
+                    }
+
+                    // Update stock levels
+                    bool stockUpdated = UpdateStockForOrder(order);
+
+                    if (stockUpdated)
+                    {
+                        // Show payment summary
+                        string paymentSummary = $"Order placed successfully!\nOrder ID: {order.OrderId}";
+
+                        if (order.PaymentType == "Cash")
+                        {
+                            if (decimal.TryParse(txtTotalPayment.Text, out decimal payment))
+                            {
+                                decimal change = payment - order.TotalAmount;
+                                paymentSummary += $"\nCash: ₱{payment:N2}";
+                                paymentSummary += $"\nChange: ₱{change:N2}";
+                            }
+                        }
+                        else if (order.PaymentType == "GCash")
+                        {
+                            paymentSummary += $"\nPayment: GCash";
+                            if (!string.IsNullOrEmpty(gcashReference))
+                            {
+                                paymentSummary += $"\nReference: {gcashReference}";
+                            }
+                        }
+
+                        // Ask if user wants to print receipt for BOTH payment types
+                        DialogResult printResult = MessageBox.Show(
+                            $"{paymentSummary}\n\nDo you want to print the receipt?",
+                            "Order Success",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Information);
+
+                        if (printResult == DialogResult.Yes)
+                        {
+                            // IMPORTANT: Refresh the GCash reference from database before printing
+                            if (order.PaymentType == "GCash")
+                            {
+                                // Small delay to ensure database is updated
+                                System.Threading.Thread.Sleep(100);
+                            }
+                            PrintReceipt();
+                        }
+
+                        // Update order number display
+                        UpdateOrderNumberDisplay();
+
+                        ResetOrderForm();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Order was saved but stock update failed. Please contact administrator.",
+                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error placing order: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            UpdateOrderNumberDisplay();
+        }
+        private void InitializeOrderNumberSystem()
+        {
+            UpdateOrderNumberDisplay();
+            StyleOrderNumberLabel();
+        }
+
+        private void UpdateOrderNumberDisplay()
+        {
+            string nextOrderId = GenerateOrderId();
+            lblOrderNumber.Text = $"Next Order: {nextOrderId}";
+        }
+
+        private void StyleOrderNumberLabel()
+        {
+            lblOrderNumber.TextAlign = ContentAlignment.MiddleCenter;
+            lblOrderNumber.ForeColor = Color.DarkGreen;
+            lblOrderNumber.BackColor = Color.Transparent;
+            lblOrderNumber.Font = new Font("Segoe UI", 11, FontStyle.Bold); 
+            lblOrderNumber.BorderStyle = BorderStyle.None; 
+            lblOrderNumber.Padding = new Padding(0);
+
+          
+            lblOrderNumber.Region = null;
+        }
+
+        private void RoundLabelCorners(Label label, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            path.StartFigure();
+            path.AddArc(new Rectangle(0, 0, radius, radius), 180, 90);
+            path.AddLine(radius, 0, label.Width - radius, 0);
+            path.AddArc(new Rectangle(label.Width - radius, 0, radius, radius), 270, 90);
+            path.AddLine(label.Width, radius, label.Width, label.Height - radius);
+            path.AddArc(new Rectangle(label.Width - radius, label.Height - radius, radius, radius), 0, 90);
+            path.AddLine(label.Width - radius, label.Height, radius, label.Height);
+            path.AddArc(new Rectangle(0, label.Height - radius, radius, radius), 90, 90);
+            path.CloseFigure();
+
+            label.Region = new Region(path);
+        }
+
+        private void lblOrderNumber_Click(object sender, EventArgs e)
+        {
+            UpdateOrderNumberDisplay();
+            ShowOrderNumberDetails();
+        }
+        private void ShowOrderNumberDetails()
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+
+                    string nextOrder = GenerateOrderId();
+
+                    string todayQuery = "SELECT COUNT(*) FROM tbl_Sales WHERE CAST(OrderDate AS DATE) = CAST(GETDATE() AS DATE)";
+                    string totalQuery = "SELECT COUNT(*) FROM tbl_Sales";
+
+                    int todayOrders = 0;
+                    int totalOrders = 0;
+
+                    using (SqlCommand cmd = new SqlCommand(todayQuery, con))
+                    {
+                        todayOrders = (int)cmd.ExecuteScalar();
+                    }
+
+                    using (SqlCommand cmd = new SqlCommand(totalQuery, con))
+                    {
+                        totalOrders = (int)cmd.ExecuteScalar();
+                    }
+
+                    string details = $"Next Order: {nextOrder}\n" +
+                                   $"Today's Orders: {todayOrders}\n" +
+                                   $"Total Orders: {totalOrders}";
+
+                    MessageBox.Show(details, "Order Information",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error retrieving order details: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string ShowGCashReferenceDialog()
+        {
+            using (var gcashForm = new Form())
+            {
+                gcashForm.Text = "GCash Payment - Reference Number";
+                gcashForm.Size = new Size(400, 200);
+                gcashForm.StartPosition = FormStartPosition.CenterScreen;
+                gcashForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                gcashForm.MaximizeBox = false;
+                gcashForm.MinimizeBox = false;
+
+                // Instruction label
+                var lblInstruction = new Label()
+                {
+                    Text = "Please enter the GCash reference number:",
+                    Location = new Point(20, 20),
+                    Size = new Size(350, 20),
+                    Font = new Font("Segoe UI", 10, FontStyle.Regular)
+                };
+
+                // Reference number input
+                var txtReference = new TextBox()
+                {
+                    Location = new Point(20, 50),
+                    Size = new Size(340, 25),
+                    Font = new Font("Segoe UI", 10, FontStyle.Regular),
+                    Text = "Enter GCash reference number...",
+                    ForeColor = Color.Gray,
+                    MaxLength = 20
+                };
+
+                // Store original text for placeholder behavior
+                bool isPlaceholder = true;
+
+                // Handle focus events for placeholder behavior
+                txtReference.Enter += (s, ev) =>
+                {
+                    if (isPlaceholder)
+                    {
+                        txtReference.Text = "";
+                        txtReference.ForeColor = Color.Black;
+                        isPlaceholder = false;
+                    }
+                };
+
+                txtReference.Leave += (s, ev) =>
+                {
+                    if (string.IsNullOrWhiteSpace(txtReference.Text))
+                    {
+                        txtReference.Text = "Enter GCash reference number...";
+                        txtReference.ForeColor = Color.Gray;
+                        isPlaceholder = true;
+                    }
+                };
+
+                // Validation label
+                var lblValidation = new Label()
+                {
+                    Text = "Reference number must be 10-20 characters",
+                    Location = new Point(20, 80),
+                    Size = new Size(350, 20),
+                    Font = new Font("Segoe UI", 8, FontStyle.Italic),
+                    ForeColor = Color.Gray
+                };
+
+                // OK button
+                var btnOK = new Button()
+                {
+                    Text = "Confirm",
+                    Location = new Point(120, 110),
+                    Size = new Size(80, 30),
+                    DialogResult = DialogResult.OK,
+                    BackColor = Color.FromArgb(0, 123, 255),
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold)
+                };
+
+                // Cancel button
+                var btnCancel = new Button()
+                {
+                    Text = "Cancel",
+                    Location = new Point(210, 110),
+                    Size = new Size(80, 30),
+                    DialogResult = DialogResult.Cancel,
+                    BackColor = Color.FromArgb(108, 117, 125),
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 9, FontStyle.Regular)
+                };
+
+                // Add controls to form
+                gcashForm.Controls.AddRange(new Control[] { lblInstruction, txtReference, lblValidation, btnOK, btnCancel });
+                gcashForm.AcceptButton = btnOK;
+                gcashForm.CancelButton = btnCancel;
+
+                // Focus on reference input
+                txtReference.Focus();
+                txtReference.SelectAll();
+
+                // Show dialog and return result
+                if (gcashForm.ShowDialog() == DialogResult.OK)
+                {
+                    string reference = txtReference.Text.Trim();
+
+                    // Check if it's still the placeholder text
+                    if (isPlaceholder || reference == "Enter GCash reference number..." || string.IsNullOrWhiteSpace(reference))
+                    {
+                        MessageBox.Show("Please enter a GCash reference number.", "Validation Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return ShowGCashReferenceDialog(); // Show dialog again
+                    }
+
+                    if (reference.Length < 10 || reference.Length > 20)
+                    {
+                        MessageBox.Show("Reference number must be between 10-20 characters.", "Validation Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return ShowGCashReferenceDialog(); // Show dialog again
+                    }
+
+                    return reference;
+                }
+                else
+                {
+                    return null; // User cancelled
+                }
+            }
         }
     }
 

@@ -275,13 +275,13 @@ namespace Vegetable_Ordering_System
                 {
                     conn.Open();
 
-                    // UPDATED INSERT QUERY TO INCLUDE NEW FIELDS
+                    // UPDATED INSERT QUERY TO INCLUDE UNIT COLUMN
                     string insertQuery = @"
                 INSERT INTO tbl_Products 
-                (ProductName, Category, Stock, Price, SupplierID, ImagePath, DateDelivered, Supplier)
+                (ProductName, Category, Stock, Price, Unit, SupplierID, ImagePath, DateDelivered, Supplier)
                 OUTPUT INSERTED.ProductID
                 VALUES
-                (@name, @category, @stock, @price, @supplierID, @imagePath, @dateDelivered, @supplier)";
+                (@name, @category, @stock, @price, @unit, @supplierID, @imagePath, @dateDelivered, @supplier)";
 
                     int newProductId;
                     string generatedBarcode = "";
@@ -293,6 +293,9 @@ namespace Vegetable_Ordering_System
                         cmd.Parameters.AddWithValue("@stock", int.Parse(txtQuantity.Text));
                         cmd.Parameters.AddWithValue("@price", decimal.Parse(txtPrice.Text));
 
+                        // NEW: Add Unit parameter
+                        cmd.Parameters.AddWithValue("@unit", cmbUnit.SelectedItem?.ToString() ?? "kg");
+
                         // Supplier ID
                         if (cmbSupplierName.SelectedValue != null)
                         {
@@ -303,10 +306,10 @@ namespace Vegetable_Ordering_System
                             cmd.Parameters.AddWithValue("@supplierID", DBNull.Value);
                         }
 
-                        // NEW: Date Delivered
+                        // Date Delivered
                         cmd.Parameters.AddWithValue("@dateDelivered", dtpDateDelivery.Value);
 
-                        // NEW: Supplier Name (from dropdown text)
+                        // Supplier Name (from dropdown text)
                         cmd.Parameters.AddWithValue("@supplier", cmbSupplierName.Text);
 
                         // Image Path
@@ -322,11 +325,11 @@ namespace Vegetable_Ordering_System
                         // Get the new ProductID
                         newProductId = (int)cmd.ExecuteScalar();
 
-                        // STEP 2: Generate barcode using the actual ProductID
+                        // Generate barcode using the actual ProductID
                         string timestamp = DateTime.Now.ToString("yyyyMMdd");
                         generatedBarcode = $"VEG{timestamp}{newProductId:D3}";
 
-                        // STEP 3: Update the record with the generated barcode
+                        // Update the record with the generated barcode
                         string updateQuery = "UPDATE tbl_Products SET Barcode = @Barcode WHERE ProductID = @ProductID";
                         using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
                         {

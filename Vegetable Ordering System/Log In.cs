@@ -17,6 +17,7 @@ namespace Vegetable_Ordering_System
         public  Log_In()
         {
             InitializeComponent();
+
         }
 
         private void logIn_Load(object sender, EventArgs e)
@@ -133,6 +134,26 @@ namespace Vegetable_Ordering_System
         private void btnLogin_Click_1(object sender, EventArgs e)
         {
             logIn();
+        }
+
+        private void checkPassword_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkPassword.Checked)
+            {
+                // Show password - remove password character
+                txtPassword.PasswordChar = '\0';
+            }
+            else
+            {
+                // Hide password - set password character
+                txtPassword.PasswordChar = '●';
+            }
+
+        }
+
+        private void Log_In_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

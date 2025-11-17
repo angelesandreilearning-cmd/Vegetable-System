@@ -35,6 +35,7 @@
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.checkPassword = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -44,7 +45,7 @@
             this.btnLogin.BackColor = System.Drawing.Color.DarkGreen;
             this.btnLogin.Font = new System.Drawing.Font("Microsoft Tai Le", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLogin.ForeColor = System.Drawing.SystemColors.Info;
-            this.btnLogin.Location = new System.Drawing.Point(68, 446);
+            this.btnLogin.Location = new System.Drawing.Point(68, 459);
             this.btnLogin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(249, 57);
@@ -97,13 +98,27 @@
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
             // 
+            // checkPassword
+            // 
+            this.checkPassword.AutoSize = true;
+            this.checkPassword.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(72)))), ((int)(((byte)(58)))));
+            this.checkPassword.Location = new System.Drawing.Point(68, 425);
+            this.checkPassword.Name = "checkPassword";
+            this.checkPassword.Size = new System.Drawing.Size(121, 21);
+            this.checkPassword.TabIndex = 7;
+            this.checkPassword.Text = "Show Password";
+            this.checkPassword.UseVisualStyleBackColor = true;
+            this.checkPassword.CheckedChanged += new System.EventHandler(this.checkPassword_CheckedChanged);
+            // 
             // Log_In
             // 
             this.AcceptButton = this.btnLogin;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(377, 514);
+            this.ClientSize = new System.Drawing.Size(377, 527);
+            this.Controls.Add(this.checkPassword);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.txtUsername);
@@ -117,6 +132,7 @@
             this.Name = "Log_In";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Login";
+            this.Load += new System.EventHandler(this.Log_In_Load);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -130,5 +146,6 @@
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.CheckBox checkPassword;
     }
 }

@@ -141,6 +141,12 @@
     <Compile Include="OrderForm.Designer.cs">
       <DependentUpon>OrderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="OrderPreviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OrderPreviewForm.Designer.cs">
+      <DependentUpon>OrderPreviewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProductItemControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -196,6 +202,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OrderForm.resx">
       <DependentUpon>OrderForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OrderPreviewForm.resx">
+      <DependentUpon>OrderPreviewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProductItemControl.resx">
       <DependentUpon>ProductItemControl.cs</DependentUpon>

@@ -453,5 +453,10 @@ namespace Vegetable_Ordering_System
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void dgv_supplier_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }

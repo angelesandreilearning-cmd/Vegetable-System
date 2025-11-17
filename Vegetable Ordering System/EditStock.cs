@@ -332,20 +332,18 @@ namespace Vegetable_Ordering_System
                 {
                     conn.Open();
 
-                    // UPDATE QUERY FOR EXISTING PRODUCT
                     string updateQuery = @"
-                UPDATE tbl_Products 
-                SET ProductName = @name, 
-                    Category = @category, 
-                    Stock = @stock, 
-                    Price = @price, 
-                    SupplierID = @supplierID, 
-                    ImagePath = @imagePath, 
-                    DateDelivered = @dateDelivered, 
-                    Supplier = @supplier,
-                    Unit = @unit
-                WHERE ProductID = @productID";
-
+    UPDATE tbl_Products 
+    SET ProductName = @name, 
+        Category = @category, 
+        Stock = @stock, 
+        Price = @price, 
+        Unit = @unit,
+        SupplierID = @supplierID, 
+        ImagePath = @imagePath, 
+        DateDelivered = @dateDelivered, 
+        Supplier = @supplier
+    WHERE ProductID = @productID";
                     using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@name", txtVegetableName.Text.Trim());

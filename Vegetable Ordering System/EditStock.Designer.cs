@@ -70,7 +70,7 @@
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(12, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(151, 38);
+            this.label1.Size = new System.Drawing.Size(148, 38);
             this.label1.TabIndex = 20;
             this.label1.Text = "Edit Stock";
             // 
@@ -266,9 +266,9 @@
             this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnSave.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSave.ForeColor = System.Drawing.Color.White;
-            this.btnSave.Location = new System.Drawing.Point(418, 491);
+            this.btnSave.Location = new System.Drawing.Point(400, 491);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(79, 33);
+            this.btnSave.Size = new System.Drawing.Size(97, 33);
             this.btnSave.TabIndex = 40;
             this.btnSave.Text = "UPDATE";
             this.btnSave.UseVisualStyleBackColor = false;
